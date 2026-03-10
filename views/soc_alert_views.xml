@@ -69,6 +69,10 @@
                            statusbar_visible="new,analyzing,confirmed,escalated,closed"/>
                 </header>
                 <sheet>
+                    <!-- Hidden fields required for invisible modifiers in Odoo 17 -->
+                    <field name="is_false_positive" invisible="1"/>
+                    <field name="alert_count" invisible="1"/>
+
                     <div class="oe_button_box" name="button_box">
                         <button name="action_escalate_to_incident" type="object"
                                 class="oe_stat_button" icon="fa-fire"
@@ -78,8 +82,10 @@
                         </button>
                         <button class="oe_stat_button" icon="fa-copy"
                                 invisible="alert_count == 0">
-                            <field name="alert_count" widget="statinfo"
-                                   string="Similar"/>
+                            <field name="alert_count" invisible="1"/>
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Similar</span>
+                            </div>
                         </button>
                     </div>
 
