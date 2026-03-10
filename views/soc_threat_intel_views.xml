@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  Threat Intelligence Views                                     -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <record id="view_soc_threat_intel_tree" model="ir.ui.view">
+        <field name="name">soc.threat.intel.tree</field>
+        <field name="model">soc.threat.intel</field>
+        <field name="arch" type="xml">
+            <tree string="Threat Intelligence">
+                <field name="indicator"/>
+                <field name="indicator_type"/>
+                <field name="source"/>
+                <field name="confidence_score" widget="progressbar"/>
+                <field name="is_malicious" widget="boolean"/>
+                <field name="country_code"/>
+                <field name="alert_id"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_soc_threat_intel_form" model="ir.ui.view">
+        <field name="name">soc.threat.intel.form</field>
+        <field name="model">soc.threat.intel</field>
+        <field name="arch" type="xml">
+            <form string="Threat Intelligence">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="indicator"/>
+                            <field name="indicator_type"/>
+                            <field name="source"/>
+                        </group>
+                        <group>
+                            <field name="confidence_score" widget="progressbar"/>
+                            <field name="is_malicious"/>
+                            <field name="country_code"/>
+                            <field name="alert_id"/>
+                        </group>
+                    </group>
+                    <group string="Tags">
+                        <field name="tags"/>
+                    </group>
+                    <group string="Raw Data">
+                        <field name="raw_data" nolabel="1" colspan="2"/>
+                    </group>
+                    <group string="Analyst Notes">
+                        <field name="notes" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_soc_threat_intel" model="ir.actions.act_window">
+        <field name="name">Threat Intelligence</field>
+        <field name="res_model">soc.threat.intel</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  Tunisia IP Range Views                                        -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <record id="view_soc_tunisia_ip_tree" model="ir.ui.view">
+        <field name="name">soc.tunisia.ip.range.tree</field>
+        <field name="model">soc.tunisia.ip.range</field>
+        <field name="arch" type="xml">
+            <tree string="Tunisia IP Ranges">
+                <field name="name"/>
+                <field name="network"/>
+                <field name="provider"/>
+                <field name="is_critical" widget="boolean"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_soc_tunisia_ip_form" model="ir.ui.view">
+        <field name="name">soc.tunisia.ip.range.form</field>
+        <field name="model">soc.tunisia.ip.range</field>
+        <field name="arch" type="xml">
+            <form string="Tunisia IP Range">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="network"/>
+                            <field name="provider"/>
+                        </group>
+                        <group>
+                            <field name="is_critical"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_soc_tunisia_ip" model="ir.actions.act_window">
+        <field name="name">Tunisia IP Ranges</field>
+        <field name="res_model">soc.tunisia.ip.range</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  MITRE ATT&CK Views                                           -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <record id="view_soc_mitre_tactic_tree" model="ir.ui.view">
+        <field name="name">soc.mitre.tactic.tree</field>
+        <field name="model">soc.mitre.tactic</field>
+        <field name="arch" type="xml">
+            <tree string="MITRE ATT&amp;CK Tactics">
+                <field name="sequence" widget="handle"/>
+                <field name="mitre_id"/>
+                <field name="name"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_soc_mitre_tactic" model="ir.actions.act_window">
+        <field name="name">MITRE ATT&amp;CK Tactics</field>
+        <field name="res_model">soc.mitre.tactic</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="view_soc_mitre_technique_tree" model="ir.ui.view">
+        <field name="name">soc.mitre.technique.tree</field>
+        <field name="model">soc.mitre.technique</field>
+        <field name="arch" type="xml">
+            <tree string="MITRE ATT&amp;CK Techniques">
+                <field name="mitre_id"/>
+                <field name="name"/>
+                <field name="tactic_id"/>
+                <field name="is_subtechnique" widget="boolean"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_soc_mitre_technique" model="ir.actions.act_window">
+        <field name="name">MITRE ATT&amp;CK Techniques</field>
+        <field name="res_model">soc.mitre.technique</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  AI Agent Views                                                -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <record id="view_soc_ai_agent_form" model="ir.ui.view">
+        <field name="name">soc.ai.agent.form</field>
+        <field name="model">soc.ai.agent</field>
+        <field name="arch" type="xml">
+            <form string="AI Agent Configuration">
+                <sheet>
+                    <group string="General">
+                        <field name="name"/>
+                        <field name="active"/>
+                    </group>
+                    <group>
+                        <group string="Ollama LLM Settings">
+                            <field name="ollama_host"/>
+                            <field name="ollama_model"/>
+                        </group>
+                        <group string="Statistics">
+                            <field name="total_analyses"/>
+                            <field name="false_positives_detected"/>
+                        </group>
+                    </group>
+                    <group string="Threat Intelligence API Keys (Open-Source)">
+                        <field name="abuseipdb_api_key" password="True"/>
+                        <field name="otx_api_key" password="True"/>
+                        <field name="virustotal_api_key" password="True"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_soc_ai_agent_tree" model="ir.ui.view">
+        <field name="name">soc.ai.agent.tree</field>
+        <field name="model">soc.ai.agent</field>
+        <field name="arch" type="xml">
+            <tree string="AI Agents">
+                <field name="name"/>
+                <field name="ollama_model"/>
+                <field name="total_analyses"/>
+                <field name="false_positives_detected"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_soc_ai_agent" model="ir.actions.act_window">
+        <field name="name">AI Agent Configuration</field>
+        <field name="res_model">soc.ai.agent</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

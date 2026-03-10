@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  Wazuh Connector Configuration View                            -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <record id="view_soc_wazuh_config_form" model="ir.ui.view">
+        <field name="name">soc.wazuh.connector.form</field>
+        <field name="model">soc.wazuh.connector</field>
+        <field name="arch" type="xml">
+            <form string="Wazuh Connector">
+                <header>
+                    <button name="action_test_connection" string="Test Connection"
+                            type="object" class="btn-primary"/>
+                    <button name="action_fetch_alerts" string="Fetch Alerts Now"
+                            type="object" class="btn-warning"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Connection Settings">
+                            <field name="wazuh_host"/>
+                            <field name="wazuh_port"/>
+                            <field name="wazuh_user"/>
+                            <field name="wazuh_password" password="True"/>
+                            <field name="verify_ssl"/>
+                        </group>
+                        <group string="Filtering Settings">
+                            <field name="min_rule_level"/>
+                            <field name="filter_tunisia_only"/>
+                            <field name="filter_major_attacks"/>
+                            <field name="fetch_interval_minutes"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Status">
+                            <field name="last_fetch_time"/>
+                            <field name="total_alerts_fetched"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Error Info">
+                            <field name="last_error"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_soc_wazuh_config_tree" model="ir.ui.view">
+        <field name="name">soc.wazuh.connector.tree</field>
+        <field name="model">soc.wazuh.connector</field>
+        <field name="arch" type="xml">
+            <tree string="Wazuh Connectors">
+                <field name="name"/>
+                <field name="wazuh_host"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'connected'"
+                       decoration-danger="state == 'error'"
+                       decoration-warning="state == 'disconnected'"/>
+                <field name="total_alerts_fetched"/>
+                <field name="last_fetch_time"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_soc_wazuh_config" model="ir.actions.act_window">
+        <field name="name">Wazuh Configuration</field>
+        <field name="res_model">soc.wazuh.connector</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

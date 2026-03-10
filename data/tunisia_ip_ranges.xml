@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!--  Tunisia IP Ranges - Major ISPs and Hosting Providers         -->
+        <!--  Source: RIPE NCC, AFRINIC, and public ASN databases          -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+
+        <!-- Tunisie Telecom -->
+        <record id="tn_ip_tt_1" model="soc.tunisia.ip.range">
+            <field name="name">Tunisie Telecom - Block 1</field>
+            <field name="network">41.224.0.0/13</field>
+            <field name="provider">tunisie_telecom</field>
+            <field name="description">Tunisie Telecom main allocation</field>
+        </record>
+        <record id="tn_ip_tt_2" model="soc.tunisia.ip.range">
+            <field name="name">Tunisie Telecom - Block 2</field>
+            <field name="network">197.0.0.0/16</field>
+            <field name="provider">tunisie_telecom</field>
+            <field name="description">Tunisie Telecom secondary allocation</field>
+        </record>
+        <record id="tn_ip_tt_3" model="soc.tunisia.ip.range">
+            <field name="name">Tunisie Telecom - Block 3</field>
+            <field name="network">197.1.0.0/16</field>
+            <field name="provider">tunisie_telecom</field>
+            <field name="description">Tunisie Telecom tertiary allocation</field>
+        </record>
+        <record id="tn_ip_tt_4" model="soc.tunisia.ip.range">
+            <field name="name">Tunisie Telecom - Block 4</field>
+            <field name="network">197.2.0.0/16</field>
+            <field name="provider">tunisie_telecom</field>
+            <field name="description">Tunisie Telecom allocation</field>
+        </record>
+        <record id="tn_ip_tt_5" model="soc.tunisia.ip.range">
+            <field name="name">Tunisie Telecom - Block 5</field>
+            <field name="network">197.3.0.0/16</field>
+            <field name="provider">tunisie_telecom</field>
+            <field name="description">Tunisie Telecom allocation</field>
+        </record>
+
+        <!-- Ooredoo Tunisia -->
+        <record id="tn_ip_ooredoo_1" model="soc.tunisia.ip.range">
+            <field name="name">Ooredoo Tunisia - Block 1</field>
+            <field name="network">197.4.0.0/14</field>
+            <field name="provider">ooredoo</field>
+            <field name="description">Ooredoo Tunisia allocation</field>
+        </record>
+        <record id="tn_ip_ooredoo_2" model="soc.tunisia.ip.range">
+            <field name="name">Ooredoo Tunisia - Block 2</field>
+            <field name="network">41.232.0.0/14</field>
+            <field name="provider">ooredoo</field>
+            <field name="description">Ooredoo Tunisia mobile allocation</field>
+        </record>
+
+        <!-- Orange Tunisia -->
+        <record id="tn_ip_orange_1" model="soc.tunisia.ip.range">
+            <field name="name">Orange Tunisia - Block 1</field>
+            <field name="network">41.236.0.0/14</field>
+            <field name="provider">orange</field>
+            <field name="description">Orange Tunisia allocation</field>
+        </record>
+
+        <!-- TOPNET -->
+        <record id="tn_ip_topnet_1" model="soc.tunisia.ip.range">
+            <field name="name">TOPNET - Block 1</field>
+            <field name="network">196.203.0.0/16</field>
+            <field name="provider">topnet</field>
+            <field name="description">TOPNET ISP allocation</field>
+        </record>
+        <record id="tn_ip_topnet_2" model="soc.tunisia.ip.range">
+            <field name="name">TOPNET - Block 2</field>
+            <field name="network">196.204.0.0/16</field>
+            <field name="provider">topnet</field>
+            <field name="description">TOPNET ISP allocation</field>
+        </record>
+
+        <!-- Hexabyte -->
+        <record id="tn_ip_hexabyte_1" model="soc.tunisia.ip.range">
+            <field name="name">Hexabyte - Block 1</field>
+            <field name="network">196.206.0.0/16</field>
+            <field name="provider">hexabyte</field>
+            <field name="description">Hexabyte ISP allocation</field>
+        </record>
+
+        <!-- ATI (Agence Tunisienne d'Internet) -->
+        <record id="tn_ip_ati_1" model="soc.tunisia.ip.range">
+            <field name="name">ATI - Block 1</field>
+            <field name="network">193.95.0.0/16</field>
+            <field name="provider">ati</field>
+            <field name="description">ATI - Agence Tunisienne d'Internet</field>
+            <field name="is_critical">True</field>
+        </record>
+        <record id="tn_ip_ati_2" model="soc.tunisia.ip.range">
+            <field name="name">ATI - Block 2</field>
+            <field name="network">193.95.68.0/24</field>
+            <field name="provider">ati</field>
+            <field name="description">ATI DNS and core infrastructure</field>
+            <field name="is_critical">True</field>
+        </record>
+
+        <!-- Government Networks -->
+        <record id="tn_ip_gov_1" model="soc.tunisia.ip.range">
+            <field name="name">Tunisia Gov - e-Government</field>
+            <field name="network">196.200.0.0/16</field>
+            <field name="provider">government</field>
+            <field name="description">Tunisian government e-services</field>
+            <field name="is_critical">True</field>
+        </record>
+        <record id="tn_ip_gov_2" model="soc.tunisia.ip.range">
+            <field name="name">Tunisia Gov - CNI</field>
+            <field name="network">196.201.0.0/16</field>
+            <field name="provider">government</field>
+            <field name="description">Centre National de l'Informatique</field>
+            <field name="is_critical">True</field>
+        </record>
+
+        <!-- Universities & Research -->
+        <record id="tn_ip_uni_1" model="soc.tunisia.ip.range">
+            <field name="name">CCK - University Network</field>
+            <field name="network">193.194.64.0/18</field>
+            <field name="provider">university</field>
+            <field name="description">Centre de Calcul Khawarizmi - University network</field>
+        </record>
+        <record id="tn_ip_uni_2" model="soc.tunisia.ip.range">
+            <field name="name">RNU - National University Network</field>
+            <field name="network">193.95.72.0/21</field>
+            <field name="provider">university</field>
+            <field name="description">Réseau National Universitaire</field>
+        </record>
+
+        <!-- Hosting Providers -->
+        <record id="tn_ip_hosting_1" model="soc.tunisia.ip.range">
+            <field name="name">Tunisia Hosting - Block 1</field>
+            <field name="network">41.228.0.0/16</field>
+            <field name="provider">hosting</field>
+            <field name="description">Tunisian hosting provider allocation</field>
+        </record>
+        <record id="tn_ip_hosting_2" model="soc.tunisia.ip.range">
+            <field name="name">Tunisia Hosting - Block 2</field>
+            <field name="network">41.229.0.0/16</field>
+            <field name="provider">hosting</field>
+            <field name="description">Tunisian hosting provider allocation</field>
+        </record>
+
+        <!-- Additional common Tunisia IP blocks -->
+        <record id="tn_ip_misc_1" model="soc.tunisia.ip.range">
+            <field name="name">Tunisia - Misc Block 1</field>
+            <field name="network">102.156.0.0/16</field>
+            <field name="provider">other</field>
+            <field name="description">AFRINIC Tunisia allocation</field>
+        </record>
+        <record id="tn_ip_misc_2" model="soc.tunisia.ip.range">
+            <field name="name">Tunisia - Misc Block 2</field>
+            <field name="network">154.121.0.0/16</field>
+            <field name="provider">other</field>
+            <field name="description">AFRINIC Tunisia allocation</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  SOC Alert Views                                               -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <!-- Alert Tree View -->
+    <record id="view_soc_alert_tree" model="ir.ui.view">
+        <field name="name">soc.alert.tree</field>
+        <field name="model">soc.alert</field>
+        <field name="arch" type="xml">
+            <tree string="Security Alerts"
+                  decoration-danger="severity == 'critical'"
+                  decoration-warning="severity == 'high'"
+                  decoration-info="severity == 'medium'"
+                  decoration-muted="state == 'false_positive'"
+                  default_order="timestamp desc">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="source"/>
+                <field name="source_ip"/>
+                <field name="destination_ip"/>
+                <field name="severity" widget="badge"
+                       decoration-danger="severity == 'critical'"
+                       decoration-warning="severity == 'high'"
+                       decoration-info="severity == 'medium'"
+                       decoration-success="severity == 'low'"/>
+                <field name="category"/>
+                <field name="is_tunisia_ip" widget="boolean"/>
+                <field name="ai_confidence_score" widget="progressbar"/>
+                <field name="timestamp"/>
+                <field name="analyst_id" widget="many2one_avatar_user"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'new'"
+                       decoration-warning="state == 'analyzing'"
+                       decoration-success="state == 'confirmed'"
+                       decoration-muted="state == 'false_positive'"
+                       decoration-danger="state == 'escalated'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Alert Form View -->
+    <record id="view_soc_alert_form" model="ir.ui.view">
+        <field name="name">soc.alert.form</field>
+        <field name="model">soc.alert</field>
+        <field name="arch" type="xml">
+            <form string="Security Alert">
+                <header>
+                    <button name="action_analyze" string="Start Analysis"
+                            type="object" class="btn-primary"
+                            invisible="state != 'new'"/>
+                    <button name="action_confirm_threat" string="Confirm Threat"
+                            type="object" class="btn-warning"
+                            invisible="state != 'analyzing'"/>
+                    <button name="action_mark_false_positive" string="Mark as False Positive"
+                            type="object"
+                            invisible="state not in ('new', 'analyzing')"/>
+                    <button name="action_escalate_to_incident" string="Escalate to Incident"
+                            type="object" class="btn-danger"
+                            invisible="state not in ('confirmed', 'analyzing')"/>
+                    <button name="action_enrich_ioc" string="🔍 Enrich IOC (AI)"
+                            type="object" class="btn-secondary"
+                            invisible="state in ('closed', 'false_positive')"/>
+                    <button name="action_close" string="Close"
+                            type="object"
+                            invisible="state in ('closed', 'escalated')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="new,analyzing,confirmed,escalated,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_escalate_to_incident" type="object"
+                                class="oe_stat_button" icon="fa-fire"
+                                invisible="not incident_id">
+                            <field name="incident_id" widget="statinfo"
+                                   string="Incident"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-copy"
+                                invisible="alert_count == 0">
+                            <field name="alert_count" widget="statinfo"
+                                   string="Similar"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="False Positive"
+                            bg_color="text-bg-secondary"
+                            invisible="not is_false_positive"/>
+                    <widget name="web_ribbon" title="Tunisia"
+                            bg_color="text-bg-danger"
+                            invisible="not is_tunisia_ip"/>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <h2>
+                            <field name="title" placeholder="Alert Title..."/>
+                        </h2>
+                    </div>
+
+                    <group>
+                        <group string="Alert Details">
+                            <field name="source"/>
+                            <field name="severity"/>
+                            <field name="category"/>
+                            <field name="timestamp"/>
+                            <field name="analyst_id" widget="many2one_avatar_user"/>
+                        </group>
+                        <group string="Network Information">
+                            <field name="source_ip"/>
+                            <field name="destination_ip"/>
+                            <field name="source_port"/>
+                            <field name="destination_port"/>
+                            <field name="protocol"/>
+                            <field name="is_tunisia_ip"/>
+                            <field name="is_tunisia_relevant"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Alert description..."/>
+                        </page>
+
+                        <page string="AI Analysis" name="ai_analysis">
+                            <group>
+                                <group>
+                                    <field name="ai_confidence_score" widget="progressbar"/>
+                                    <field name="ai_is_false_positive"/>
+                                    <field name="tunisia_relevance_score" widget="progressbar"/>
+                                </group>
+                                <group>
+                                    <field name="analyzed_at"/>
+                                    <field name="closed_at"/>
+                                </group>
+                            </group>
+                            <group string="AI Analysis Result">
+                                <field name="ai_analysis" nolabel="1" colspan="2"/>
+                            </group>
+                            <group string="AI Recommended Action">
+                                <field name="ai_recommended_action" nolabel="1" colspan="2"/>
+                            </group>
+                            <group string="False Positive Reason"
+                                   invisible="not ai_is_false_positive">
+                                <field name="false_positive_reason" nolabel="1" colspan="2"/>
+                            </group>
+                        </page>
+
+                        <page string="Wazuh Details" name="wazuh"
+                              invisible="source != 'wazuh'">
+                            <group>
+                                <group>
+                                    <field name="wazuh_rule_id"/>
+                                    <field name="wazuh_rule_description"/>
+                                    <field name="severity_level"/>
+                                </group>
+                                <group>
+                                    <field name="wazuh_agent_id"/>
+                                    <field name="wazuh_agent_name"/>
+                                    <field name="wazuh_manager"/>
+                                </group>
+                            </group>
+                            <group string="Full Log">
+                                <field name="wazuh_full_log" nolabel="1" colspan="2"/>
+                            </group>
+                        </page>
+
+                        <page string="MITRE ATT&amp;CK" name="mitre">
+                            <group>
+                                <field name="mitre_tactic_id"/>
+                                <field name="mitre_technique_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+
+                        <page string="IOC &amp; Threat Intel" name="ioc">
+                            <group>
+                                <group>
+                                    <field name="ioc_type"/>
+                                    <field name="ioc_value"/>
+                                </group>
+                            </group>
+                            <field name="threat_intel_ids">
+                                <tree>
+                                    <field name="source"/>
+                                    <field name="indicator"/>
+                                    <field name="indicator_type"/>
+                                    <field name="confidence_score" widget="progressbar"/>
+                                    <field name="is_malicious" widget="boolean"/>
+                                    <field name="create_date"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Raw Data" name="raw">
+                            <field name="raw_log"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Alert Search View -->
+    <record id="view_soc_alert_search" model="ir.ui.view">
+        <field name="name">soc.alert.search</field>
+        <field name="model">soc.alert</field>
+        <field name="arch" type="xml">
+            <search string="Search Alerts">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="source_ip"/>
+                <field name="destination_ip"/>
+                <field name="wazuh_rule_id"/>
+                <field name="analyst_id"/>
+                <separator/>
+                <filter string="New" name="filter_new"
+                        domain="[('state', '=', 'new')]"/>
+                <filter string="Analyzing" name="filter_analyzing"
+                        domain="[('state', '=', 'analyzing')]"/>
+                <filter string="Confirmed" name="filter_confirmed"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Escalated" name="filter_escalated"
+                        domain="[('state', '=', 'escalated')]"/>
+                <separator/>
+                <filter string="Not False Positives" name="filter_not_fp"
+                        domain="[('state', '!=', 'false_positive')]"/>
+                <filter string="False Positives" name="filter_fp"
+                        domain="[('state', '=', 'false_positive')]"/>
+                <separator/>
+                <filter string="Tunisia Relevant" name="filter_tunisia"
+                        domain="[('is_tunisia_relevant', '=', True)]"/>
+                <filter string="Tunisia IP" name="filter_tunisia_ip"
+                        domain="[('is_tunisia_ip', '=', True)]"/>
+                <separator/>
+                <filter string="Critical" name="filter_critical"
+                        domain="[('severity', '=', 'critical')]"/>
+                <filter string="High" name="filter_high"
+                        domain="[('severity', '=', 'high')]"/>
+                <filter string="Medium" name="filter_medium"
+                        domain="[('severity', '=', 'medium')]"/>
+                <separator/>
+                <filter string="Today" name="filter_today"
+                        domain="[('timestamp', '>=', (context_today()).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="filter_week"
+                        domain="[('timestamp', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Severity" name="group_severity"
+                            context="{'group_by': 'severity'}"/>
+                    <filter string="Category" name="group_category"
+                            context="{'group_by': 'category'}"/>
+                    <filter string="Status" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Source" name="group_source"
+                            context="{'group_by': 'source'}"/>
+                    <filter string="Source IP" name="group_source_ip"
+                            context="{'group_by': 'source_ip'}"/>
+                    <filter string="Analyst" name="group_analyst"
+                            context="{'group_by': 'analyst_id'}"/>
+                    <filter string="Date" name="group_date"
+                            context="{'group_by': 'timestamp:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Alert Kanban View -->
+    <record id="view_soc_alert_kanban" model="ir.ui.view">
+        <field name="name">soc.alert.kanban</field>
+        <field name="model">soc.alert</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state"
+                    class="o_kanban_small_column"
+                    default_order="timestamp desc">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="severity"/>
+                <field name="category"/>
+                <field name="source_ip"/>
+                <field name="state"/>
+                <field name="is_tunisia_ip"/>
+                <field name="ai_confidence_score"/>
+                <field name="analyst_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click
+                            #{record.severity.raw_value == 'critical' ? 'border-danger border-start border-4' :
+                              record.severity.raw_value == 'high' ? 'border-warning border-start border-4' :
+                              record.severity.raw_value == 'medium' ? 'border-info border-start border-4' :
+                              'border-success border-start border-4'}">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top mb-1">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <div class="float-end">
+                                        <field name="severity" widget="badge"
+                                               decoration-danger="severity == 'critical'"
+                                               decoration-warning="severity == 'high'"
+                                               decoration-info="severity == 'medium'"
+                                               decoration-success="severity == 'low'"/>
+                                    </div>
+                                </div>
+                                <div class="mb-1">
+                                    <small><field name="title"/></small>
+                                </div>
+                                <div class="mb-1">
+                                    <span class="badge text-bg-secondary" t-if="record.category.raw_value">
+                                        <field name="category"/>
+                                    </span>
+                                    <span class="badge text-bg-danger ms-1" t-if="record.is_tunisia_ip.raw_value">
+                                        🇹🇳 TN
+                                    </span>
+                                </div>
+                                <div class="text-muted small">
+                                    <span t-if="record.source_ip.raw_value">
+                                        <i class="fa fa-globe"/> <field name="source_ip"/>
+                                    </span>
+                                </div>
+                                <div class="o_kanban_record_bottom mt-2">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="timestamp" widget="date"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="analyst_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Alert Pivot View -->
+    <record id="view_soc_alert_pivot" model="ir.ui.view">
+        <field name="name">soc.alert.pivot</field>
+        <field name="model">soc.alert</field>
+        <field name="arch" type="xml">
+            <pivot string="Alert Analysis">
+                <field name="severity" type="col"/>
+                <field name="category" type="row"/>
+                <field name="id" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Alert Graph View -->
+    <record id="view_soc_alert_graph" model="ir.ui.view">
+        <field name="name">soc.alert.graph</field>
+        <field name="model">soc.alert</field>
+        <field name="arch" type="xml">
+            <graph string="Alert Statistics" type="bar">
+                <field name="timestamp" interval="day"/>
+                <field name="id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Alert Action -->
+    <record id="action_soc_alert" model="ir.actions.act_window">
+        <field name="name">Security Alerts</field>
+        <field name="res_model">soc.alert</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_soc_alert_search"/>
+        <field name="context">{'search_default_filter_not_fp': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No security alerts yet
+            </p>
+            <p>
+                Security alerts from Wazuh SIEM will appear here.
+                Configure your Wazuh connector to start receiving alerts.
+            </p>
+        </field>
+    </record>
+
+    <!-- Action: Tunisia-relevant alerts only -->
+    <record id="action_soc_alert_tunisia" model="ir.actions.act_window">
+        <field name="name">Tunisia Alerts</field>
+        <field name="res_model">soc.alert</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="view_soc_alert_search"/>
+        <field name="domain">[('is_tunisia_relevant', '=', True), ('state', '!=', 'false_positive')]</field>
+    </record>
+
+    <!-- Action: Critical alerts -->
+    <record id="action_soc_alert_critical" model="ir.actions.act_window">
+        <field name="name">Critical Alerts</field>
+        <field name="res_model">soc.alert</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('severity', 'in', ['high', 'critical']), ('state', 'not in', ['false_positive', 'closed'])]</field>
+    </record>
+
+</odoo>

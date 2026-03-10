@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  Sequences                                                 -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <record id="seq_soc_alert" model="ir.sequence">
+            <field name="name">SOC Alert Sequence</field>
+            <field name="code">soc.alert</field>
+            <field name="prefix">ALR-%(year)s-</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_soc_incident" model="ir.sequence">
+            <field name="name">SOC Incident Sequence</field>
+            <field name="code">soc.incident</field>
+            <field name="prefix">INC-%(year)s-</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  Default AI Agent Configuration                            -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <record id="default_ai_agent" model="soc.ai.agent">
+            <field name="name">SOC AI Threat Intelligence Agent</field>
+            <field name="ollama_host">http://localhost:11434</field>
+            <field name="ollama_model">mistral</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  Default Wazuh Connector                                   -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <record id="default_wazuh_connector" model="soc.wazuh.connector">
+            <field name="name">Wazuh Manager (Default)</field>
+            <field name="wazuh_host">https://localhost</field>
+            <field name="wazuh_port">55000</field>
+            <field name="wazuh_user">wazuh-wui</field>
+            <field name="wazuh_password">changeme</field>
+            <field name="min_rule_level">7</field>
+            <field name="filter_tunisia_only">True</field>
+            <field name="filter_major_attacks">True</field>
+        </record>
+
+    </data>
+</odoo>

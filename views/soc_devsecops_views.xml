@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  DevSecOps Scan Views                                          -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <!-- Scan Tree View -->
+    <record id="view_devsecops_scan_tree" model="ir.ui.view">
+        <field name="name">soc.devsecops.scan.tree</field>
+        <field name="model">soc.devsecops.scan</field>
+        <field name="arch" type="xml">
+            <tree string="DevSecOps Scans"
+                  decoration-danger="pass_fail == 'fail'"
+                  decoration-warning="pass_fail == 'warning'"
+                  decoration-success="pass_fail == 'pass'"
+                  default_order="create_date desc">
+                <field name="name"/>
+                <field name="target_type"/>
+                <field name="target_value"/>
+                <field name="target_environment" widget="badge"
+                       decoration-info="target_environment == 'development'"
+                       decoration-warning="target_environment == 'staging'"
+                       decoration-danger="target_environment == 'production'"/>
+                <field name="profile_id"/>
+                <field name="critical_count"/>
+                <field name="high_count"/>
+                <field name="medium_count"/>
+                <field name="total_vulnerabilities"/>
+                <field name="pass_fail" widget="badge"
+                       decoration-danger="pass_fail == 'fail'"
+                       decoration-warning="pass_fail == 'warning'"
+                       decoration-success="pass_fail == 'pass'"/>
+                <field name="duration_minutes" widget="float_time"/>
+                <field name="jenkins_build_number" optional="show"/>
+                <field name="analyst_id" widget="many2one_avatar_user"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'running'"
+                       decoration-success="state == 'completed'"
+                       decoration-danger="state == 'failed'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Scan Form View -->
+    <record id="view_devsecops_scan_form" model="ir.ui.view">
+        <field name="name">soc.devsecops.scan.form</field>
+        <field name="model">soc.devsecops.scan</field>
+        <field name="arch" type="xml">
+            <form string="DevSecOps Scan">
+                <header>
+                    <button name="action_start_scan" string="▶ Start Scan"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_cancel" string="Cancel"
+                            type="object"
+                            invisible="state not in ('draft', 'queued', 'running')"/>
+                    <button name="action_reset_draft" string="Reset to Draft"
+                            type="object"
+                            invisible="state not in ('completed', 'failed', 'cancelled')"/>
+                    <button name="action_create_alert_from_critical"
+                            string="🚨 Create SOC Alerts from Critical"
+                            type="object" class="btn-danger"
+                            invisible="state != 'completed' or critical_count == 0"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,queued,running,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_findings" type="object"
+                                class="oe_stat_button" icon="fa-bug">
+                            <field name="finding_count" widget="statinfo"
+                                   string="Findings"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="FAIL ❌"
+                            bg_color="text-bg-danger"
+                            invisible="pass_fail != 'fail'"/>
+                    <widget name="web_ribbon" title="PASS ✅"
+                            bg_color="text-bg-success"
+                            invisible="pass_fail != 'pass'"/>
+                    <widget name="web_ribbon" title="WARNING ⚠️"
+                            bg_color="text-bg-warning"
+                            invisible="pass_fail != 'warning'"/>
+
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Scan Target">
+                            <field name="target_type"/>
+                            <field name="target_value"
+                                   placeholder="e.g. myapp:latest, https://github.com/user/repo, /path/to/code"/>
+                            <field name="target_branch"/>
+                            <field name="target_environment"/>
+                            <field name="profile_id"/>
+                        </group>
+                        <group string="Execution">
+                            <field name="analyst_id" widget="many2one_avatar_user"/>
+                            <field name="started_at"/>
+                            <field name="completed_at"/>
+                            <field name="duration_minutes" widget="float_time"/>
+                        </group>
+                    </group>
+
+                    <!-- Vulnerability Summary -->
+                    <group string="📊 Vulnerability Summary"
+                           invisible="state not in ('completed', 'failed')">
+                        <group>
+                            <field name="total_vulnerabilities"/>
+                            <field name="pass_fail"/>
+                        </group>
+                        <group>
+                            <div class="row">
+                                <div class="col-3 text-center">
+                                    <h3 style="color: #ff5252;"><field name="critical_count" nolabel="1"/></h3>
+                                    <small class="text-muted">Critical</small>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <h3 style="color: #ffab40;"><field name="high_count" nolabel="1"/></h3>
+                                    <small class="text-muted">High</small>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <h3 style="color: #4fc3f7;"><field name="medium_count" nolabel="1"/></h3>
+                                    <small class="text-muted">Medium</small>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <h3 style="color: #69f0ae;"><field name="low_count" nolabel="1"/></h3>
+                                    <small class="text-muted">Low</small>
+                                </div>
+                            </div>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Findings" name="findings">
+                            <field name="finding_ids">
+                                <tree decoration-danger="severity == 'critical'"
+                                      decoration-warning="severity == 'high'"
+                                      decoration-info="severity == 'medium'"
+                                      default_order="severity_order desc">
+                                    <field name="title"/>
+                                    <field name="scanner"/>
+                                    <field name="severity" widget="badge"
+                                           decoration-danger="severity == 'critical'"
+                                           decoration-warning="severity == 'high'"
+                                           decoration-info="severity == 'medium'"
+                                           decoration-success="severity == 'low'"/>
+                                    <field name="category"/>
+                                    <field name="vulnerability_id"/>
+                                    <field name="cvss_score"/>
+                                    <field name="affected_component"/>
+                                    <field name="file_path"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="severity_order" column_invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Jenkins / CI-CD" name="jenkins">
+                            <group>
+                                <group>
+                                    <field name="jenkins_triggered"/>
+                                    <field name="jenkins_job_url" widget="url"/>
+                                    <field name="jenkins_build_number"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Raw Output" name="raw">
+                            <field name="raw_output"/>
+                        </page>
+
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Add scan notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Scan Search View -->
+    <record id="view_devsecops_scan_search" model="ir.ui.view">
+        <field name="name">soc.devsecops.scan.search</field>
+        <field name="model">soc.devsecops.scan</field>
+        <field name="arch" type="xml">
+            <search string="Search Scans">
+                <field name="name"/>
+                <field name="target_value"/>
+                <field name="profile_id"/>
+                <separator/>
+                <filter string="Failed" name="filter_failed"
+                        domain="[('pass_fail', '=', 'fail')]"/>
+                <filter string="Warning" name="filter_warning"
+                        domain="[('pass_fail', '=', 'warning')]"/>
+                <filter string="Passed" name="filter_passed"
+                        domain="[('pass_fail', '=', 'pass')]"/>
+                <separator/>
+                <filter string="Docker Image" name="filter_docker"
+                        domain="[('target_type', '=', 'docker_image')]"/>
+                <filter string="Git Repo" name="filter_git"
+                        domain="[('target_type', '=', 'git_repo')]"/>
+                <filter string="Kubernetes" name="filter_k8s"
+                        domain="[('target_type', '=', 'kubernetes')]"/>
+                <filter string="Cloud" name="filter_cloud"
+                        domain="[('target_type', 'in', ['cloud_aws', 'cloud_azure', 'cloud_gcp'])]"/>
+                <separator/>
+                <filter string="Production" name="filter_prod"
+                        domain="[('target_environment', '=', 'production')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Target Type" name="group_target"
+                            context="{'group_by': 'target_type'}"/>
+                    <filter string="Environment" name="group_env"
+                            context="{'group_by': 'target_environment'}"/>
+                    <filter string="Profile" name="group_profile"
+                            context="{'group_by': 'profile_id'}"/>
+                    <filter string="Result" name="group_result"
+                            context="{'group_by': 'pass_fail'}"/>
+                    <filter string="Status" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Scan Action -->
+    <record id="action_devsecops_scan" model="ir.actions.act_window">
+        <field name="name">Security Scans</field>
+        <field name="res_model">soc.devsecops.scan</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_devsecops_scan_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Start your first DevSecOps scan
+            </p>
+            <p>
+                Create a new scan, select a target (Docker image, Git repo, K8s cluster),
+                choose a scan profile, and launch the pipeline.
+            </p>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  Finding Views                                                 -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <record id="view_devsecops_finding_tree" model="ir.ui.view">
+        <field name="name">soc.devsecops.finding.tree</field>
+        <field name="model">soc.devsecops.finding</field>
+        <field name="arch" type="xml">
+            <tree string="Security Findings"
+                  decoration-danger="severity == 'critical'"
+                  decoration-warning="severity == 'high'"
+                  decoration-info="severity == 'medium'"
+                  default_order="severity_order desc">
+                <field name="title"/>
+                <field name="scanner" widget="badge"/>
+                <field name="severity" widget="badge"
+                       decoration-danger="severity == 'critical'"
+                       decoration-warning="severity == 'high'"
+                       decoration-info="severity == 'medium'"
+                       decoration-success="severity == 'low'"/>
+                <field name="category"/>
+                <field name="vulnerability_id"/>
+                <field name="cvss_score"/>
+                <field name="affected_component"/>
+                <field name="installed_version"/>
+                <field name="fixed_version"/>
+                <field name="file_path"/>
+                <field name="line_number"/>
+                <field name="scan_id"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'open'"
+                       decoration-success="state == 'resolved'"
+                       decoration-muted="state in ('accepted_risk', 'false_positive')"/>
+                <field name="severity_order" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_devsecops_finding_form" model="ir.ui.view">
+        <field name="name">soc.devsecops.finding.form</field>
+        <field name="model">soc.devsecops.finding</field>
+        <field name="arch" type="xml">
+            <form string="Security Finding">
+                <header>
+                    <button name="action_mark_resolved" string="✅ Resolved"
+                            type="object" class="btn-success"
+                            invisible="state != 'open'"/>
+                    <button name="action_accept_risk" string="Accept Risk"
+                            type="object"
+                            invisible="state != 'open'"/>
+                    <button name="action_mark_false_positive" string="False Positive"
+                            type="object"
+                            invisible="state != 'open'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="title"/></h1>
+                    </div>
+                    <group>
+                        <group string="Classification">
+                            <field name="scanner"/>
+                            <field name="severity"/>
+                            <field name="category"/>
+                            <field name="scan_id"/>
+                        </group>
+                        <group string="Vulnerability Details">
+                            <field name="vulnerability_id"/>
+                            <field name="cvss_score"/>
+                            <field name="cwe_id"/>
+                            <field name="alert_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Affected Component">
+                            <field name="affected_component"/>
+                            <field name="installed_version"/>
+                            <field name="fixed_version"/>
+                        </group>
+                        <group string="Location">
+                            <field name="file_path"/>
+                            <field name="line_number"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Remediation">
+                            <field name="remediation"/>
+                        </page>
+                        <page string="References">
+                            <field name="reference_urls"/>
+                        </page>
+                        <page string="Raw Data">
+                            <field name="raw_data"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Finding Search -->
+    <record id="view_devsecops_finding_search" model="ir.ui.view">
+        <field name="name">soc.devsecops.finding.search</field>
+        <field name="model">soc.devsecops.finding</field>
+        <field name="arch" type="xml">
+            <search string="Search Findings">
+                <field name="title"/>
+                <field name="vulnerability_id"/>
+                <field name="affected_component"/>
+                <field name="file_path"/>
+                <separator/>
+                <filter string="Critical" name="filter_critical"
+                        domain="[('severity', '=', 'critical')]"/>
+                <filter string="High" name="filter_high"
+                        domain="[('severity', '=', 'high')]"/>
+                <filter string="Open" name="filter_open"
+                        domain="[('state', '=', 'open')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Scanner" context="{'group_by': 'scanner'}"/>
+                    <filter string="Severity" context="{'group_by': 'severity'}"/>
+                    <filter string="Category" context="{'group_by': 'category'}"/>
+                    <filter string="Status" context="{'group_by': 'state'}"/>
+                    <filter string="Scan" context="{'group_by': 'scan_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_devsecops_finding" model="ir.actions.act_window">
+        <field name="name">Security Findings</field>
+        <field name="res_model">soc.devsecops.finding</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_devsecops_finding_search"/>
+        <field name="context">{'search_default_filter_open': 1}</field>
+    </record>
+
+    <!-- Finding Pivot -->
+    <record id="view_devsecops_finding_pivot" model="ir.ui.view">
+        <field name="name">soc.devsecops.finding.pivot</field>
+        <field name="model">soc.devsecops.finding</field>
+        <field name="arch" type="xml">
+            <pivot string="Findings Analysis">
+                <field name="scanner" type="row"/>
+                <field name="severity" type="col"/>
+                <field name="id" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  Scan Profile Views                                            -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <record id="view_devsecops_profile_form" model="ir.ui.view">
+        <field name="name">soc.devsecops.scan.profile.form</field>
+        <field name="model">soc.devsecops.scan.profile</field>
+        <field name="arch" type="xml">
+            <form string="Scan Profile">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <field name="description" placeholder="Profile description..."/>
+
+                    <group string="🔍 SAST - Static Application Security Testing">
+                        <group>
+                            <field name="enable_bandit"/>
+                            <field name="enable_semgrep"/>
+                        </group>
+                        <group>
+                            <field name="enable_sonarqube"/>
+                            <field name="enable_gitleaks"/>
+                        </group>
+                    </group>
+
+                    <group string="📦 SCA - Software Composition Analysis">
+                        <group>
+                            <field name="enable_owasp_dc"/>
+                        </group>
+                        <group>
+                            <field name="enable_trivy"/>
+                        </group>
+                    </group>
+
+                    <group string="🐳 Container Security">
+                        <group>
+                            <field name="enable_docker_bench"/>
+                        </group>
+                    </group>
+
+                    <group string="☸️ Kubernetes Security">
+                        <group>
+                            <field name="enable_kube_bench"/>
+                            <field name="enable_kube_hunter"/>
+                        </group>
+                        <group>
+                            <field name="enable_kubeaudit"/>
+                            <field name="enable_falco"/>
+                        </group>
+                    </group>
+
+                    <group string="🏗️ Infrastructure as Code">
+                        <group>
+                            <field name="enable_checkov"/>
+                        </group>
+                    </group>
+
+                    <group string="☁️ Cloud Security">
+                        <group>
+                            <field name="enable_scoutsuite"/>
+                            <field name="enable_prowler"/>
+                        </group>
+                        <group>
+                            <field name="enable_cloudsploit"/>
+                        </group>
+                    </group>
+
+                    <group string="🌐 DAST - Dynamic Application Security Testing">
+                        <group>
+                            <field name="enable_zap"/>
+                        </group>
+                        <group>
+                            <field name="enable_nuclei"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_devsecops_profile_tree" model="ir.ui.view">
+        <field name="name">soc.devsecops.scan.profile.tree</field>
+        <field name="model">soc.devsecops.scan.profile</field>
+        <field name="arch" type="xml">
+            <tree string="Scan Profiles">
+                <field name="name"/>
+                <field name="enable_trivy" widget="boolean"/>
+                <field name="enable_owasp_dc" widget="boolean"/>
+                <field name="enable_bandit" widget="boolean"/>
+                <field name="enable_semgrep" widget="boolean"/>
+                <field name="enable_gitleaks" widget="boolean"/>
+                <field name="enable_docker_bench" widget="boolean"/>
+                <field name="enable_kube_bench" widget="boolean"/>
+                <field name="enable_checkov" widget="boolean"/>
+                <field name="scan_count"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_devsecops_profile" model="ir.actions.act_window">
+        <field name="name">Scan Profiles</field>
+        <field name="res_model">soc.devsecops.scan.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  Jenkins Config Views                                          -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <record id="view_devsecops_jenkins_form" model="ir.ui.view">
+        <field name="name">soc.devsecops.jenkins.config.form</field>
+        <field name="model">soc.devsecops.jenkins.config</field>
+        <field name="arch" type="xml">
+            <form string="Jenkins &amp; CI/CD Configuration">
+                <header>
+                    <button name="action_test_jenkins" string="Test Jenkins Connection"
+                            type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="🔧 Jenkins Settings">
+                            <field name="jenkins_url"/>
+                            <field name="jenkins_user"/>
+                            <field name="jenkins_api_token" password="True"/>
+                        </group>
+                        <group string="📊 SonarQube Settings">
+                            <field name="sonarqube_url"/>
+                            <field name="sonarqube_token" password="True"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="🐳 Docker Registry">
+                            <field name="docker_registry"/>
+                            <field name="docker_registry_user"/>
+                            <field name="docker_registry_password" password="True"/>
+                        </group>
+                        <group string="☸️ Kubernetes">
+                            <field name="k8s_context"/>
+                            <field name="k8s_namespace"/>
+                            <field name="k8s_kubeconfig_path"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="☁️ Cloud Credentials">
+                            <field name="aws_profile"/>
+                            <field name="aws_region"/>
+                            <field name="azure_subscription_id"/>
+                            <field name="gcp_project_id"/>
+                        </group>
+                        <group string="🚦 Pipeline Policy Gates">
+                            <field name="fail_on_critical"/>
+                            <field name="fail_on_high"/>
+                            <field name="max_critical_allowed"/>
+                            <field name="max_high_allowed"/>
+                        </group>
+                    </group>
+
+                    <group string="Error Info" invisible="not last_error">
+                        <field name="last_error"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_devsecops_jenkins_tree" model="ir.ui.view">
+        <field name="name">soc.devsecops.jenkins.config.tree</field>
+        <field name="model">soc.devsecops.jenkins.config</field>
+        <field name="arch" type="xml">
+            <tree string="CI/CD Configurations">
+                <field name="name"/>
+                <field name="jenkins_url"/>
+                <field name="sonarqube_url"/>
+                <field name="docker_registry"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'connected'"
+                       decoration-danger="state == 'error'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_devsecops_jenkins" model="ir.actions.act_window">
+        <field name="name">Jenkins &amp; CI/CD Configuration</field>
+        <field name="res_model">soc.devsecops.jenkins.config</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

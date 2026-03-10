@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  SOC Dashboard - Client Action                                 -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <record id="action_soc_dashboard" model="ir.actions.client">
+        <field name="name">SOC Dashboard</field>
+        <field name="tag">soc_management.dashboard</field>
+        <field name="params">{}</field>
+    </record>
+
+</odoo>

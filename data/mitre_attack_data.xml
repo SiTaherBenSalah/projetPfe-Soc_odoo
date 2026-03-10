@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  MITRE ATT&CK Framework - Tactics                         -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+
+        <record id="tactic_reconnaissance" model="soc.mitre.tactic">
+            <field name="name">Reconnaissance</field>
+            <field name="mitre_id">TA0043</field>
+            <field name="description">Gathering information to plan future adversary operations.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0043/</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="tactic_resource_dev" model="soc.mitre.tactic">
+            <field name="name">Resource Development</field>
+            <field name="mitre_id">TA0042</field>
+            <field name="description">Establishing resources to support operations.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0042/</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="tactic_initial_access" model="soc.mitre.tactic">
+            <field name="name">Initial Access</field>
+            <field name="mitre_id">TA0001</field>
+            <field name="description">Trying to get into your network.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0001/</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="tactic_execution" model="soc.mitre.tactic">
+            <field name="name">Execution</field>
+            <field name="mitre_id">TA0002</field>
+            <field name="description">Trying to run malicious code.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0002/</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <record id="tactic_persistence" model="soc.mitre.tactic">
+            <field name="name">Persistence</field>
+            <field name="mitre_id">TA0003</field>
+            <field name="description">Trying to maintain their foothold.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0003/</field>
+            <field name="sequence">5</field>
+        </record>
+
+        <record id="tactic_privilege_escalation" model="soc.mitre.tactic">
+            <field name="name">Privilege Escalation</field>
+            <field name="mitre_id">TA0004</field>
+            <field name="description">Trying to gain higher-level permissions.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0004/</field>
+            <field name="sequence">6</field>
+        </record>
+
+        <record id="tactic_defense_evasion" model="soc.mitre.tactic">
+            <field name="name">Defense Evasion</field>
+            <field name="mitre_id">TA0005</field>
+            <field name="description">Trying to avoid being detected.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0005/</field>
+            <field name="sequence">7</field>
+        </record>
+
+        <record id="tactic_credential_access" model="soc.mitre.tactic">
+            <field name="name">Credential Access</field>
+            <field name="mitre_id">TA0006</field>
+            <field name="description">Trying to steal account names and passwords.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0006/</field>
+            <field name="sequence">8</field>
+        </record>
+
+        <record id="tactic_discovery" model="soc.mitre.tactic">
+            <field name="name">Discovery</field>
+            <field name="mitre_id">TA0007</field>
+            <field name="description">Trying to figure out your environment.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0007/</field>
+            <field name="sequence">9</field>
+        </record>
+
+        <record id="tactic_lateral_movement" model="soc.mitre.tactic">
+            <field name="name">Lateral Movement</field>
+            <field name="mitre_id">TA0008</field>
+            <field name="description">Trying to move through your environment.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0008/</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="tactic_collection" model="soc.mitre.tactic">
+            <field name="name">Collection</field>
+            <field name="mitre_id">TA0009</field>
+            <field name="description">Trying to gather data of interest.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0009/</field>
+            <field name="sequence">11</field>
+        </record>
+
+        <record id="tactic_command_control" model="soc.mitre.tactic">
+            <field name="name">Command and Control</field>
+            <field name="mitre_id">TA0011</field>
+            <field name="description">Trying to communicate with compromised systems.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0011/</field>
+            <field name="sequence">12</field>
+        </record>
+
+        <record id="tactic_exfiltration" model="soc.mitre.tactic">
+            <field name="name">Exfiltration</field>
+            <field name="mitre_id">TA0010</field>
+            <field name="description">Trying to steal data.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0010/</field>
+            <field name="sequence">13</field>
+        </record>
+
+        <record id="tactic_impact" model="soc.mitre.tactic">
+            <field name="name">Impact</field>
+            <field name="mitre_id">TA0040</field>
+            <field name="description">Trying to manipulate, interrupt, or destroy systems and data.</field>
+            <field name="url">https://attack.mitre.org/tactics/TA0040/</field>
+            <field name="sequence">14</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  MITRE ATT&CK - Key Techniques (Tunisia-relevant)         -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+
+        <record id="tech_phishing" model="soc.mitre.technique">
+            <field name="name">Phishing</field>
+            <field name="mitre_id">T1566</field>
+            <field name="description">Adversaries send phishing messages to gain access to victim systems.</field>
+            <field name="url">https://attack.mitre.org/techniques/T1566/</field>
+            <field name="tactic_id" ref="tactic_initial_access"/>
+        </record>
+
+        <record id="tech_exploit_public" model="soc.mitre.technique">
+            <field name="name">Exploit Public-Facing Application</field>
+            <field name="mitre_id">T1190</field>
+            <field name="description">Adversaries exploit vulnerabilities in internet-facing applications.</field>
+            <field name="url">https://attack.mitre.org/techniques/T1190/</field>
+            <field name="tactic_id" ref="tactic_initial_access"/>
+        </record>
+
+        <record id="tech_brute_force" model="soc.mitre.technique">
+            <field name="name">Brute Force</field>
+            <field name="mitre_id">T1110</field>
+            <field name="description">Adversaries use brute force techniques to attempt access to accounts.</field>
+            <field name="url">https://attack.mitre.org/techniques/T1110/</field>
+            <field name="tactic_id" ref="tactic_credential_access"/>
+        </record>
+
+        <record id="tech_command_scripting" model="soc.mitre.technique">
+            <field name="name">Command and Scripting Interpreter</field>
+            <field name="mitre_id">T1059</field>
+            <field name="description">Adversaries abuse command and script interpreters to execute commands.</field>
+            <field name="url">https://attack.mitre.org/techniques/T1059/</field>
+            <field name="tactic_id" ref="tactic_execution"/>
+        </record>
+
+        <record id="tech_data_encrypted" model="soc.mitre.technique">
+            <field name="name">Data Encrypted for Impact</field>
+            <field name="mitre_id">T1486</field>
+            <field name="description">Adversaries encrypt data to hold it for ransom (ransomware).</field>
+            <field name="url">https://attack.mitre.org/techniques/T1486/</field>
+            <field name="tactic_id" ref="tactic_impact"/>
+        </record>
+
+        <record id="tech_network_dos" model="soc.mitre.technique">
+            <field name="name">Network Denial of Service</field>
+            <field name="mitre_id">T1498</field>
+            <field name="description">Adversaries perform network denial of service (DDoS) attacks.</field>
+            <field name="url">https://attack.mitre.org/techniques/T1498/</field>
+            <field name="tactic_id" ref="tactic_impact"/>
+        </record>
+
+        <record id="tech_sql_injection" model="soc.mitre.technique">
+            <field name="name">Exploitation for Client Execution (SQL Injection)</field>
+            <field name="mitre_id">T1203</field>
+            <field name="description">Adversaries exploit SQL injection vulnerabilities in web applications.</field>
+            <field name="url">https://attack.mitre.org/techniques/T1203/</field>
+            <field name="tactic_id" ref="tactic_execution"/>
+        </record>
+
+        <record id="tech_active_scanning" model="soc.mitre.technique">
+            <field name="name">Active Scanning</field>
+            <field name="mitre_id">T1595</field>
+            <field name="description">Adversaries actively scan infrastructure to gather information.</field>
+            <field name="url">https://attack.mitre.org/techniques/T1595/</field>
+            <field name="tactic_id" ref="tactic_reconnaissance"/>
+        </record>
+
+        <record id="tech_exfil_c2" model="soc.mitre.technique">
+            <field name="name">Exfiltration Over C2 Channel</field>
+            <field name="mitre_id">T1041</field>
+            <field name="description">Adversaries steal data by sending it over the C2 channel.</field>
+            <field name="url">https://attack.mitre.org/techniques/T1041/</field>
+            <field name="tactic_id" ref="tactic_exfiltration"/>
+        </record>
+
+        <record id="tech_remote_services" model="soc.mitre.technique">
+            <field name="name">Remote Services</field>
+            <field name="mitre_id">T1021</field>
+            <field name="description">Adversaries use valid accounts to log into remote services (SSH, RDP).</field>
+            <field name="url">https://attack.mitre.org/techniques/T1021/</field>
+            <field name="tactic_id" ref="tactic_lateral_movement"/>
+        </record>
+
+    </data>
+</odoo>

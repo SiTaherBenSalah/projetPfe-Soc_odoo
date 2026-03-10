@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  SOC Dashboard OWL Template                                    -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <t t-name="soc_management.Dashboard">
+        <div class="soc-dashboard">
+
+            <!-- Loading State -->
+            <t t-if="state.loading and !state.data">
+                <div class="soc-loading">
+                    <div class="soc-loading-spinner"/>
+                    <div class="soc-loading-text">Loading SOC Dashboard...</div>
+                </div>
+            </t>
+
+            <!-- Dashboard Content -->
+            <t t-if="state.data">
+
+                <!-- ─── Header ────────────────────────────────────── -->
+                <div class="soc-header">
+                    <div class="soc-header-left">
+                        <div class="soc-header-icon">🛡️</div>
+                        <div>
+                            <h1>SOC Dashboard</h1>
+                            <p class="soc-subtitle">Security Operations Center - Tunisia</p>
+                        </div>
+                    </div>
+                    <div class="soc-header-right">
+                        <span class="soc-status-badge soc-status-live">Live Monitoring</span>
+                        <button class="soc-refresh-btn" t-on-click="onRefresh">
+                            <i class="fa fa-refresh"/> Refresh
+                        </button>
+                        <span style="font-size: 12px; color: var(--soc-text-secondary);">
+                            Last: <t t-esc="state.lastRefresh"/>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ─── KPI Cards ─────────────────────────────────── -->
+                <div class="soc-kpi-grid">
+
+                    <div class="soc-kpi-card kpi-alerts" t-on-click="openAlerts">
+                        <div class="soc-kpi-icon icon-blue">
+                            <i class="fa fa-bell"/>
+                        </div>
+                        <div class="soc-kpi-value val-blue" t-esc="state.data.total_alerts"/>
+                        <div class="soc-kpi-label">Total Alerts</div>
+                        <div class="soc-kpi-change up" t-if="state.data.alerts_today > 0">
+                            +<t t-esc="state.data.alerts_today"/> today
+                        </div>
+                    </div>
+
+                    <div class="soc-kpi-card kpi-critical" t-on-click="openCriticalAlerts">
+                        <div class="soc-kpi-icon icon-red">
+                            <i class="fa fa-exclamation-triangle"/>
+                        </div>
+                        <div class="soc-kpi-value val-red" t-esc="state.data.new_alerts"/>
+                        <div class="soc-kpi-label">New Alerts</div>
+                    </div>
+
+                    <div class="soc-kpi-card kpi-incidents" t-on-click="openIncidents">
+                        <div class="soc-kpi-icon icon-orange">
+                            <i class="fa fa-fire"/>
+                        </div>
+                        <div class="soc-kpi-value val-orange" t-esc="state.data.open_incidents"/>
+                        <div class="soc-kpi-label">Open Incidents</div>
+                        <div class="soc-kpi-change up" t-if="state.data.critical_incidents > 0">
+                            <t t-esc="state.data.critical_incidents"/> critical
+                        </div>
+                    </div>
+
+                    <div class="soc-kpi-card kpi-tunisia" t-on-click="openTunisiaAlerts">
+                        <div class="soc-kpi-icon icon-purple">
+                            <i class="fa fa-map-marker"/>
+                        </div>
+                        <div class="soc-kpi-value val-purple" t-esc="state.data.tunisia_alerts"/>
+                        <div class="soc-kpi-label">Tunisia Alerts 🇹🇳</div>
+                    </div>
+
+                    <div class="soc-kpi-card kpi-fp">
+                        <div class="soc-kpi-icon icon-green">
+                            <i class="fa fa-shield"/>
+                        </div>
+                        <div class="soc-kpi-value val-green">
+                            <t t-esc="state.data.fp_rate"/>%
+                        </div>
+                        <div class="soc-kpi-label">False Positive Rate</div>
+                    </div>
+
+                    <div class="soc-kpi-card kpi-ai">
+                        <div class="soc-kpi-icon icon-cyan">
+                            <i class="fa fa-robot"/>
+                        </div>
+                        <div class="soc-kpi-value val-cyan"
+                             t-esc="state.data.ai_stats.total_analyses || 0"/>
+                        <div class="soc-kpi-label">AI Analyses</div>
+                    </div>
+
+                    <div class="soc-kpi-card kpi-alerts">
+                        <div class="soc-kpi-icon icon-blue">
+                            <i class="fa fa-clock-o"/>
+                        </div>
+                        <div class="soc-kpi-value val-blue">
+                            <t t-esc="state.data.mttr"/>h
+                        </div>
+                        <div class="soc-kpi-label">MTTR (Avg)</div>
+                    </div>
+
+                    <div class="soc-kpi-card kpi-incidents">
+                        <div class="soc-kpi-icon icon-orange">
+                            <i class="fa fa-line-chart"/>
+                        </div>
+                        <div class="soc-kpi-value val-orange"
+                             t-esc="state.data.alerts_this_week"/>
+                        <div class="soc-kpi-label">Alerts This Week</div>
+                    </div>
+
+                </div>
+
+                <!-- ─── Charts Row ────────────────────────────────── -->
+                <div class="soc-charts-row">
+
+                    <!-- Daily Alerts Bar Chart -->
+                    <div class="soc-chart-card">
+                        <div class="soc-chart-title">
+                            <i class="fa fa-bar-chart"/> Alerts - Last 7 Days
+                        </div>
+                        <div class="soc-bar-chart">
+                            <t t-foreach="state.data.daily_alerts" t-as="day" t-key="day.date">
+                                <div class="soc-bar-wrapper">
+                                    <div class="soc-bar-count" t-esc="day.count"/>
+                                    <div class="soc-bar"
+                                         t-attf-style="height: #{getBarHeight(day.count)}"/>
+                                    <div class="soc-bar-label" t-esc="day.day"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Severity Donut -->
+                    <div class="soc-chart-card">
+                        <div class="soc-chart-title">
+                            <i class="fa fa-pie-chart"/> Severity Distribution
+                        </div>
+                        <div class="soc-donut-container">
+                            <div class="soc-donut" t-attf-style="#{getDonutStyle()}">
+                                <div class="soc-donut-center">
+                                    <div class="soc-donut-total" t-esc="getSeverityTotal()"/>
+                                    <div class="soc-donut-label">Active</div>
+                                </div>
+                            </div>
+                            <div class="soc-legend">
+                                <div class="soc-legend-item">
+                                    <span class="soc-legend-dot dot-critical"/>
+                                    <span>Critical</span>
+                                    <span class="soc-legend-count"
+                                          t-esc="state.data.severity_data.critical || 0"/>
+                                </div>
+                                <div class="soc-legend-item">
+                                    <span class="soc-legend-dot dot-high"/>
+                                    <span>High</span>
+                                    <span class="soc-legend-count"
+                                          t-esc="state.data.severity_data.high || 0"/>
+                                </div>
+                                <div class="soc-legend-item">
+                                    <span class="soc-legend-dot dot-medium"/>
+                                    <span>Medium</span>
+                                    <span class="soc-legend-count"
+                                          t-esc="state.data.severity_data.medium || 0"/>
+                                </div>
+                                <div class="soc-legend-item">
+                                    <span class="soc-legend-dot dot-low"/>
+                                    <span>Low</span>
+                                    <span class="soc-legend-count"
+                                          t-esc="state.data.severity_data.low || 0"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ─── Tables Row ────────────────────────────────── -->
+                <div class="soc-tables-row">
+
+                    <!-- Recent Critical Alerts -->
+                    <div class="soc-chart-card">
+                        <div class="soc-chart-title">
+                            <i class="fa fa-exclamation-circle"/> Recent Critical Alerts
+                        </div>
+                        <table class="soc-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Severity</th>
+                                    <th>Source IP</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.data.recent_critical" t-as="alert"
+                                   t-key="alert.id">
+                                    <tr t-on-click="() => this.openAlert(alert.id)"
+                                        style="cursor: pointer;">
+                                        <td t-esc="alert.name"/>
+                                        <td>
+                                            <span style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                                  t-esc="alert.title"/>
+                                        </td>
+                                        <td>
+                                            <span t-attf-class="soc-severity-badge soc-severity-#{alert.severity}"
+                                                  t-esc="alert.severity"/>
+                                        </td>
+                                        <td t-esc="alert.source_ip"/>
+                                        <td style="white-space: nowrap;" t-esc="alert.timestamp"/>
+                                    </tr>
+                                </t>
+                                <t t-if="!state.data.recent_critical.length">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: var(--soc-text-secondary); padding: 24px;">
+                                            No critical alerts — All clear! ✅
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Top Source IPs -->
+                    <div class="soc-chart-card">
+                        <div class="soc-chart-title">
+                            <i class="fa fa-globe"/> Top Source IPs (Attackers)
+                        </div>
+                        <table class="soc-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>IP Address</th>
+                                    <th>Alert Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.data.top_source_ips" t-as="ip"
+                                   t-key="ip.ip">
+                                    <tr>
+                                        <td t-esc="ip_index + 1"/>
+                                        <td>
+                                            <span style="font-family: monospace;"
+                                                  t-esc="ip.ip"/>
+                                        </td>
+                                        <td>
+                                            <span style="font-weight: 600; color: var(--soc-accent-red);"
+                                                  t-esc="ip.count"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="!state.data.top_source_ips.length">
+                                    <tr>
+                                        <td colspan="3" style="text-align: center; color: var(--soc-text-secondary); padding: 24px;">
+                                            No source IPs recorded yet
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <!-- ─── Bottom Row ────────────────────────────────── -->
+                <div class="soc-bottom-row">
+
+                    <!-- Attack Categories -->
+                    <div class="soc-chart-card">
+                        <div class="soc-chart-title">
+                            <i class="fa fa-crosshairs"/> Attack Categories
+                        </div>
+                        <div class="soc-category-chart">
+                            <t t-foreach="state.data.category_data" t-as="cat"
+                               t-key="cat.label">
+                                <div class="soc-category-item">
+                                    <div class="soc-category-label" t-esc="cat.label"/>
+                                    <div class="soc-category-bar-bg">
+                                        <div class="soc-category-bar-fill"
+                                             t-attf-style="width: #{getCategoryBarWidth(cat.count)}">
+                                            <span t-esc="cat.count"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-if="!state.data.category_data.length">
+                                <div style="text-align: center; color: var(--soc-text-secondary); padding: 24px;">
+                                    No categorized attacks yet
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Incident Pipeline -->
+                    <div class="soc-chart-card">
+                        <div class="soc-chart-title">
+                            <i class="fa fa-tasks"/> Incident Response Pipeline
+                        </div>
+                        <div class="soc-incident-pipeline">
+                            <div class="soc-pipeline-stage">
+                                <div class="soc-pipeline-count"
+                                     t-esc="state.data.incident_status_data.new || 0"/>
+                                <div class="soc-pipeline-label">New</div>
+                            </div>
+                            <div class="soc-pipeline-stage">
+                                <div class="soc-pipeline-count"
+                                     t-esc="state.data.incident_status_data.triage || 0"/>
+                                <div class="soc-pipeline-label">Triage</div>
+                            </div>
+                            <div class="soc-pipeline-stage">
+                                <div class="soc-pipeline-count"
+                                     t-esc="state.data.incident_status_data.investigation || 0"/>
+                                <div class="soc-pipeline-label">Investigate</div>
+                            </div>
+                            <div class="soc-pipeline-stage">
+                                <div class="soc-pipeline-count"
+                                     t-esc="state.data.incident_status_data.containment || 0"/>
+                                <div class="soc-pipeline-label">Contain</div>
+                            </div>
+                            <div class="soc-pipeline-stage">
+                                <div class="soc-pipeline-count"
+                                     t-esc="state.data.incident_status_data.eradication || 0"/>
+                                <div class="soc-pipeline-label">Eradicate</div>
+                            </div>
+                            <div class="soc-pipeline-stage">
+                                <div class="soc-pipeline-count"
+                                     t-esc="state.data.incident_status_data.recovery || 0"/>
+                                <div class="soc-pipeline-label">Recover</div>
+                            </div>
+                            <div class="soc-pipeline-stage">
+                                <div class="soc-pipeline-count"
+                                     t-esc="state.data.incident_status_data.closed || 0"/>
+                                <div class="soc-pipeline-label">Closed</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <div class="soc-chart-title">
+                                <i class="fa fa-info-circle"/> Summary
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div class="soc-pipeline-stage">
+                                    <div class="soc-pipeline-count" style="color: var(--soc-accent-orange);"
+                                         t-esc="state.data.total_incidents"/>
+                                    <div class="soc-pipeline-label">Total Incidents</div>
+                                </div>
+                                <div class="soc-pipeline-stage">
+                                    <div class="soc-pipeline-count" style="color: var(--soc-accent-green);"
+                                         t-esc="state.data.escalated_alerts"/>
+                                    <div class="soc-pipeline-label">Escalated Alerts</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </t>
+
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  DevSecOps Default Data                                        -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <!-- Scan ID Sequence -->
+    <record id="sequence_devsecops_scan" model="ir.sequence">
+        <field name="name">DevSecOps Scan Sequence</field>
+        <field name="code">soc.devsecops.scan</field>
+        <field name="prefix">SCAN-%(year)s-</field>
+        <field name="padding">5</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  Default Scan Profiles                                         -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <!-- Full Pipeline - All scanners enabled -->
+    <record id="profile_full_pipeline" model="soc.devsecops.scan.profile">
+        <field name="name">Full Security Pipeline</field>
+        <field name="description">Complete DevSecOps scan with all available tools. Best for pre-production audits.</field>
+        <field name="enable_trivy" eval="True"/>
+        <field name="enable_owasp_dc" eval="True"/>
+        <field name="enable_bandit" eval="True"/>
+        <field name="enable_semgrep" eval="True"/>
+        <field name="enable_sonarqube" eval="False"/>
+        <field name="enable_gitleaks" eval="True"/>
+        <field name="enable_docker_bench" eval="True"/>
+        <field name="enable_kube_bench" eval="True"/>
+        <field name="enable_kube_hunter" eval="True"/>
+        <field name="enable_falco" eval="False"/>
+        <field name="enable_kubeaudit" eval="True"/>
+        <field name="enable_scoutsuite" eval="False"/>
+        <field name="enable_prowler" eval="False"/>
+        <field name="enable_cloudsploit" eval="False"/>
+        <field name="enable_checkov" eval="True"/>
+        <field name="enable_nuclei" eval="True"/>
+        <field name="enable_zap" eval="True"/>
+    </record>
+
+    <!-- Docker Image Scan Profile -->
+    <record id="profile_docker_image" model="soc.devsecops.scan.profile">
+        <field name="name">Docker Image Scan</field>
+        <field name="description">Scan Docker images for vulnerabilities with Trivy + Docker Bench.</field>
+        <field name="enable_trivy" eval="True"/>
+        <field name="enable_owasp_dc" eval="False"/>
+        <field name="enable_bandit" eval="False"/>
+        <field name="enable_semgrep" eval="False"/>
+        <field name="enable_sonarqube" eval="False"/>
+        <field name="enable_gitleaks" eval="False"/>
+        <field name="enable_docker_bench" eval="True"/>
+        <field name="enable_kube_bench" eval="False"/>
+        <field name="enable_kube_hunter" eval="False"/>
+        <field name="enable_falco" eval="False"/>
+        <field name="enable_kubeaudit" eval="False"/>
+        <field name="enable_scoutsuite" eval="False"/>
+        <field name="enable_prowler" eval="False"/>
+        <field name="enable_cloudsploit" eval="False"/>
+        <field name="enable_checkov" eval="False"/>
+        <field name="enable_nuclei" eval="False"/>
+        <field name="enable_zap" eval="False"/>
+    </record>
+
+    <!-- SAST Code Scan Profile -->
+    <record id="profile_sast_code" model="soc.devsecops.scan.profile">
+        <field name="name">SAST Code Analysis</field>
+        <field name="description">Static code analysis with Bandit, Semgrep, Gitleaks. For Python/JavaScript/Go repos.</field>
+        <field name="enable_trivy" eval="False"/>
+        <field name="enable_owasp_dc" eval="True"/>
+        <field name="enable_bandit" eval="True"/>
+        <field name="enable_semgrep" eval="True"/>
+        <field name="enable_sonarqube" eval="False"/>
+        <field name="enable_gitleaks" eval="True"/>
+        <field name="enable_docker_bench" eval="False"/>
+        <field name="enable_kube_bench" eval="False"/>
+        <field name="enable_kube_hunter" eval="False"/>
+        <field name="enable_falco" eval="False"/>
+        <field name="enable_kubeaudit" eval="False"/>
+        <field name="enable_scoutsuite" eval="False"/>
+        <field name="enable_prowler" eval="False"/>
+        <field name="enable_cloudsploit" eval="False"/>
+        <field name="enable_checkov" eval="False"/>
+        <field name="enable_nuclei" eval="False"/>
+        <field name="enable_zap" eval="False"/>
+    </record>
+
+    <!-- Kubernetes Security Profile -->
+    <record id="profile_kubernetes" model="soc.devsecops.scan.profile">
+        <field name="name">Kubernetes Security Audit</field>
+        <field name="description">Full K8s cluster audit: kube-bench (CIS), kube-hunter (pentest), kubeaudit.</field>
+        <field name="enable_trivy" eval="False"/>
+        <field name="enable_owasp_dc" eval="False"/>
+        <field name="enable_bandit" eval="False"/>
+        <field name="enable_semgrep" eval="False"/>
+        <field name="enable_sonarqube" eval="False"/>
+        <field name="enable_gitleaks" eval="False"/>
+        <field name="enable_docker_bench" eval="False"/>
+        <field name="enable_kube_bench" eval="True"/>
+        <field name="enable_kube_hunter" eval="True"/>
+        <field name="enable_falco" eval="False"/>
+        <field name="enable_kubeaudit" eval="True"/>
+        <field name="enable_scoutsuite" eval="False"/>
+        <field name="enable_prowler" eval="False"/>
+        <field name="enable_cloudsploit" eval="False"/>
+        <field name="enable_checkov" eval="True"/>
+        <field name="enable_nuclei" eval="False"/>
+        <field name="enable_zap" eval="False"/>
+    </record>
+
+    <!-- Cloud Security Profile -->
+    <record id="profile_cloud_security" model="soc.devsecops.scan.profile">
+        <field name="name">Cloud Security Assessment</field>
+        <field name="description">Cloud security audit for AWS/Azure/GCP with ScoutSuite, Prowler, CloudSploit.</field>
+        <field name="enable_trivy" eval="False"/>
+        <field name="enable_owasp_dc" eval="False"/>
+        <field name="enable_bandit" eval="False"/>
+        <field name="enable_semgrep" eval="False"/>
+        <field name="enable_sonarqube" eval="False"/>
+        <field name="enable_gitleaks" eval="False"/>
+        <field name="enable_docker_bench" eval="False"/>
+        <field name="enable_kube_bench" eval="False"/>
+        <field name="enable_kube_hunter" eval="False"/>
+        <field name="enable_falco" eval="False"/>
+        <field name="enable_kubeaudit" eval="False"/>
+        <field name="enable_scoutsuite" eval="True"/>
+        <field name="enable_prowler" eval="True"/>
+        <field name="enable_cloudsploit" eval="True"/>
+        <field name="enable_checkov" eval="True"/>
+        <field name="enable_nuclei" eval="False"/>
+        <field name="enable_zap" eval="False"/>
+    </record>
+
+    <!-- IaC Security Profile -->
+    <record id="profile_iac_security" model="soc.devsecops.scan.profile">
+        <field name="name">IaC Security (Terraform/K8s manifests)</field>
+        <field name="description">IaC security scanning for Terraform, Kubernetes YAML, CloudFormation, Dockerfiles.</field>
+        <field name="enable_trivy" eval="True"/>
+        <field name="enable_owasp_dc" eval="False"/>
+        <field name="enable_bandit" eval="False"/>
+        <field name="enable_semgrep" eval="False"/>
+        <field name="enable_sonarqube" eval="False"/>
+        <field name="enable_gitleaks" eval="True"/>
+        <field name="enable_docker_bench" eval="False"/>
+        <field name="enable_kube_bench" eval="False"/>
+        <field name="enable_kube_hunter" eval="False"/>
+        <field name="enable_falco" eval="False"/>
+        <field name="enable_kubeaudit" eval="False"/>
+        <field name="enable_scoutsuite" eval="False"/>
+        <field name="enable_prowler" eval="False"/>
+        <field name="enable_cloudsploit" eval="False"/>
+        <field name="enable_checkov" eval="True"/>
+        <field name="enable_nuclei" eval="False"/>
+        <field name="enable_zap" eval="False"/>
+    </record>
+
+    <!-- Web App DAST Profile -->
+    <record id="profile_dast_webapp" model="soc.devsecops.scan.profile">
+        <field name="name">Web Application DAST</field>
+        <field name="description">Dynamic application security testing with OWASP ZAP and Nuclei.</field>
+        <field name="enable_trivy" eval="False"/>
+        <field name="enable_owasp_dc" eval="False"/>
+        <field name="enable_bandit" eval="False"/>
+        <field name="enable_semgrep" eval="False"/>
+        <field name="enable_sonarqube" eval="False"/>
+        <field name="enable_gitleaks" eval="False"/>
+        <field name="enable_docker_bench" eval="False"/>
+        <field name="enable_kube_bench" eval="False"/>
+        <field name="enable_kube_hunter" eval="False"/>
+        <field name="enable_falco" eval="False"/>
+        <field name="enable_kubeaudit" eval="False"/>
+        <field name="enable_scoutsuite" eval="False"/>
+        <field name="enable_prowler" eval="False"/>
+        <field name="enable_cloudsploit" eval="False"/>
+        <field name="enable_checkov" eval="False"/>
+        <field name="enable_nuclei" eval="True"/>
+        <field name="enable_zap" eval="True"/>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  Default Jenkins Configuration                                 -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <record id="default_jenkins_config" model="soc.devsecops.jenkins.config">
+        <field name="name">Default CI/CD Configuration</field>
+        <field name="jenkins_url">http://localhost:8080</field>
+        <field name="sonarqube_url">http://localhost:9000</field>
+        <field name="docker_registry">docker.io</field>
+        <field name="k8s_context">default</field>
+        <field name="k8s_namespace">default</field>
+        <field name="fail_on_critical" eval="True"/>
+        <field name="fail_on_high" eval="False"/>
+        <field name="max_critical_allowed">0</field>
+        <field name="max_high_allowed">5</field>
+    </record>
+
+</odoo>
