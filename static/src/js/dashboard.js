@@ -9,7 +9,7 @@ import { useService } from "@web/core/utils/hooks";
  * Displays real-time security metrics, charts, and alert summaries.
  */
 class SocDashboard extends Component {
-    static template = "soc_management.Dashboard";
+    static template = "projetPfe-Soc_odoo.Dashboard";
 
     setup() {
         this.rpc = useService("rpc");
@@ -52,19 +52,19 @@ class SocDashboard extends Component {
     // ── Navigation Actions ───────────────────────────────────────────────
 
     openAlerts() {
-        this.action.doAction("soc_management.action_soc_alert");
+        this.action.doAction("projetPfe-Soc_odoo.action_soc_alert");
     }
 
     openCriticalAlerts() {
-        this.action.doAction("soc_management.action_soc_alert_critical");
+        this.action.doAction("projetPfe-Soc_odoo.action_soc_alert_critical");
     }
 
     openIncidents() {
-        this.action.doAction("soc_management.action_soc_incident");
+        this.action.doAction("projetPfe-Soc_odoo.action_soc_incident");
     }
 
     openTunisiaAlerts() {
-        this.action.doAction("soc_management.action_soc_alert_tunisia");
+        this.action.doAction("projetPfe-Soc_odoo.action_soc_alert_tunisia");
     }
 
     openAlert(alertId) {
@@ -139,4 +139,4 @@ class SocDashboard extends Component {
 }
 
 // Register dashboard action
-registry.category("actions").add("soc_management.dashboard", SocDashboard);
+registry.category("actions").add("projetPfe-Soc_odoo.dashboard", SocDashboard);

@@ -5,7 +5,7 @@
     <!--  SOC Dashboard OWL Template                                    -->
     <!-- ══════════════════════════════════════════════════════════════ -->
 
-    <t t-name="soc_management.Dashboard">
+    <t t-name="projetPfe-Soc_odoo.Dashboard">
         <div class="soc-dashboard">
 
             <!-- Loading State -->

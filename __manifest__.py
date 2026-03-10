@@ -55,9 +55,9 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'soc_management/static/src/css/dashboard.css',
-            'soc_management/static/src/js/dashboard.js',
-            'soc_management/static/src/xml/dashboard_template.xml',
+            'projetPfe-Soc_odoo/static/src/css/dashboard.css',
+            'projetPfe-Soc_odoo/static/src/js/dashboard.js',
+            'projetPfe-Soc_odoo/static/src/xml/dashboard_template.xml',
         ],
     },
     'installable': True,
