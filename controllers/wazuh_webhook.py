@@ -11,6 +11,7 @@ import hashlib
 
 from odoo import http
 from odoo.http import request
+from . import wazuh_filters
 
 _logger = logging.getLogger(__name__)
 
@@ -61,7 +62,12 @@ class WazuhWebhookController(http.Controller):
 
             # Get Tunisia IP checker
             tunisia_ip = request.env['soc.tunisia.ip.range'].sudo()
-            
+
+            # Apply python file criteria filters
+            if not wazuh_filters.apply_filters(alert_data):
+                _logger.info("Alert filtered out by wazuh_filters.py criteria.")
+                return {'status': 'success', 'message': 'Alert filtered out due to custom criteria'}
+                 
             source_ip = (
                 net_data.get('srcip')
                 or net_data.get('src_ip', '')

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_soc_ticket_tree" model="ir.ui.view">
+        <field name="name">soc.ticket.tree</field>
+        <field name="model">soc.ticket</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'new'" decoration-warning="state == 'in_progress'" decoration-success="state == 'resolved'" decoration-muted="state == 'closed'">
+                <field name="name"/>
+                <field name="first_name"/>
+                <field name="last_name"/>
+                <field name="level"/>
+                <field name="state" widget="badge" decoration-info="state == 'new'" decoration-warning="state == 'in_progress'" decoration-success="state == 'resolved'" decoration-muted="state == 'closed'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_soc_ticket_form" model="ir.ui.view">
+        <field name="name">soc.ticket.form</field>
+        <field name="model">soc.ticket</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" string="Commencer" type="object" class="oe_highlight" invisible="state != 'new'"/>
+                    <button name="action_resolve" string="Résoudre" type="object" class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="action_close" string="Clôturer" type="object" class="oe_highlight" invisible="state not in ('new', 'in_progress', 'resolved')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,in_progress,resolved,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="first_name" />
+                            <field name="last_name" />
+                        </group>
+                        <group>
+                            <field name="level" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_soc_ticket" model="ir.actions.act_window">
+        <field name="name">Gestion des Tickets SOC</field>
+        <field name="res_model">soc.ticket</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un nouveau ticket d'équipe SOC
+            </p>
+        </field>
+    </record>
+</odoo>

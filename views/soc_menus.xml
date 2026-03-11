@@ -17,60 +17,7 @@
               action="action_soc_dashboard"
               sequence="1"/>
 
-    <!-- Alerts -->
-    <menuitem id="menu_soc_alerts_parent"
-              name="Alerts"
-              parent="menu_soc_root"
-              sequence="10"/>
-
-    <menuitem id="menu_soc_alerts_all"
-              name="All Alerts"
-              parent="menu_soc_alerts_parent"
-              action="action_soc_alert"
-              sequence="1"/>
-
-    <menuitem id="menu_soc_alerts_tunisia"
-              name="Tunisia Alerts"
-              parent="menu_soc_alerts_parent"
-              action="action_soc_alert_tunisia"
-              sequence="2"/>
-
-    <menuitem id="menu_soc_alerts_critical"
-              name="Critical Alerts"
-              parent="menu_soc_alerts_parent"
-              action="action_soc_alert_critical"
-              sequence="3"/>
-
-    <!-- Incidents -->
-    <menuitem id="menu_soc_incidents"
-              name="Incidents"
-              parent="menu_soc_root"
-              action="action_soc_incident"
-              sequence="20"/>
-
-    <!-- Threat Intelligence -->
-    <menuitem id="menu_soc_threat_intel_parent"
-              name="Threat Intelligence"
-              parent="menu_soc_root"
-              sequence="30"/>
-
-    <menuitem id="menu_soc_threat_intel"
-              name="Intelligence Data"
-              parent="menu_soc_threat_intel_parent"
-              action="action_soc_threat_intel"
-              sequence="1"/>
-
-    <menuitem id="menu_soc_mitre_tactics"
-              name="MITRE ATT&amp;CK Tactics"
-              parent="menu_soc_threat_intel_parent"
-              action="action_soc_mitre_tactic"
-              sequence="2"/>
-
-    <menuitem id="menu_soc_mitre_techniques"
-              name="MITRE ATT&amp;CK Techniques"
-              parent="menu_soc_threat_intel_parent"
-              action="action_soc_mitre_technique"
-              sequence="3"/>
+    <!-- Alerts, Incidents, Threat Intelligence menus are hidden from standard left-menu. They are integrated via Dashboard -->
 
     <!-- ─── DevSecOps Pipeline ──────────────────────────────── -->
     <menuitem id="menu_soc_devsecops_parent"

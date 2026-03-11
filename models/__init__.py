@@ -10,3 +10,4 @@ from . import soc_ai_agent
 from . import soc_devsecops_scan
 from . import soc_devsecops_pipeline
 from . import soc_devsecops_jenkins
+from . import soc_ticket

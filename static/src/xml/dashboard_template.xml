@@ -39,6 +39,22 @@
                     </div>
                 </div>
 
+                <!-- ─── Quick Links (Integrated Menu) ────────────────────── -->
+                <div class="soc-quick-links" style="display: flex; gap: 10px; margin-bottom: 20px; padding: 10px; background: var(--soc-bg-secondary); border-radius: 8px;">
+                    <button class="soc-btn" style="padding: 10px 15px; border: none; border-radius: 5px; background: var(--soc-accent-blue); color: white; cursor: pointer;" t-on-click="openIncidents">
+                        <i class="fa fa-fire"/> Incidents
+                    </button>
+                    <button class="soc-btn" style="padding: 10px 15px; border: none; border-radius: 5px; background: var(--soc-accent-green); color: white; cursor: pointer;" t-on-click="openTickets">
+                        <i class="fa fa-ticket"/> Gestion Tickets
+                    </button>
+                    <button class="soc-btn" style="padding: 10px 15px; border: none; border-radius: 5px; background: var(--soc-accent-purple); color: white; cursor: pointer;" t-on-click="openMitreTactics">
+                        <i class="fa fa-shield"/> MITRE Tactics
+                    </button>
+                    <button class="soc-btn" style="padding: 10px 15px; border: none; border-radius: 5px; background: var(--soc-accent-orange); color: white; cursor: pointer;" t-on-click="openMitreTechniques">
+                        <i class="fa fa-cogs"/> MITRE Techniques
+                    </button>
+                </div>
+
                 <!-- ─── KPI Cards ─────────────────────────────────── -->
                 <div class="soc-kpi-grid">
 

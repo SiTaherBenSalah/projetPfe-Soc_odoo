@@ -21,6 +21,14 @@
             <field name="number_increment">1</field>
         </record>
 
+        <record id="seq_soc_ticket" model="ir.sequence">
+            <field name="name">SOC Ticket Sequence</field>
+            <field name="code">soc.ticket</field>
+            <field name="prefix">TKT-%(year)s-</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+        </record>
+
         <!-- ══════════════════════════════════════════════════════════ -->
         <!--  Default AI Agent Configuration                            -->
         <!-- ══════════════════════════════════════════════════════════ -->

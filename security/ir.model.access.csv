@@ -27,3 +27,4 @@ access_devsecops_pipeline_user,soc.devsecops.pipeline.user,model_soc_devsecops_p
 access_devsecops_pipeline_manager,soc.devsecops.pipeline.manager,model_soc_devsecops_pipeline,base.group_system,1,1,1,1
 access_devsecops_jenkins_user,soc.devsecops.jenkins.config.user,model_soc_devsecops_jenkins_config,base.group_user,1,0,0,0
 access_devsecops_jenkins_manager,soc.devsecops.jenkins.config.manager,model_soc_devsecops_jenkins_config,base.group_system,1,1,1,1
+access_soc_ticket_user,soc.ticket.user,model_soc_ticket,base.group_user,1,1,1,1

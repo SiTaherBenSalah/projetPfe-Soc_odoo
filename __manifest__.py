@@ -51,6 +51,7 @@
         'views/soc_threat_intel_views.xml',
         'views/soc_wazuh_config_views.xml',
         'views/soc_devsecops_views.xml',
+        'views/soc_ticket_views.xml',
         'views/soc_menus.xml',
     ],
     'assets': {

@@ -67,6 +67,18 @@ class SocDashboard extends Component {
         this.action.doAction("projetPfe-Soc_odoo.action_soc_alert_tunisia");
     }
 
+    openTickets() {
+        this.action.doAction("projetPfe-Soc_odoo.action_soc_ticket");
+    }
+
+    openMitreTactics() {
+        this.action.doAction("projetPfe-Soc_odoo.action_soc_mitre_tactic");
+    }
+
+    openMitreTechniques() {
+        this.action.doAction("projetPfe-Soc_odoo.action_soc_mitre_technique");
+    }
+
     openAlert(alertId) {
         this.action.doAction({
             type: "ir.actions.act_window",
