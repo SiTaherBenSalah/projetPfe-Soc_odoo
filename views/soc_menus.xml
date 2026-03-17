@@ -2,6 +2,8 @@
 <odoo>
     <!-- ══════════════════════════════════════════════════════════════ -->
     <!--  SOC Management Menu Structure                                 -->
+    <!--  Only the Dashboard is shown in the menu.                      -->
+    <!--  All other views are accessible via Dashboard quick-links.     -->
     <!-- ══════════════════════════════════════════════════════════════ -->
 
     <!-- Root Menu -->
@@ -10,68 +12,11 @@
               web_icon="soc_management,static/description/icon.png"
               sequence="5"/>
 
-    <!-- Dashboard -->
+    <!-- Dashboard (unique menu item) -->
     <menuitem id="menu_soc_dashboard"
               name="Dashboard"
               parent="menu_soc_root"
               action="action_soc_dashboard"
               sequence="1"/>
-
-    <!-- Alerts, Incidents, Threat Intelligence menus are hidden from standard left-menu. They are integrated via Dashboard -->
-
-    <!-- ─── DevSecOps Pipeline ──────────────────────────────── -->
-    <menuitem id="menu_soc_devsecops_parent"
-              name="DevSecOps"
-              parent="menu_soc_root"
-              sequence="40"/>
-
-    <menuitem id="menu_devsecops_scans"
-              name="Security Scans"
-              parent="menu_soc_devsecops_parent"
-              action="action_devsecops_scan"
-              sequence="1"/>
-
-    <menuitem id="menu_devsecops_findings"
-              name="Findings"
-              parent="menu_soc_devsecops_parent"
-              action="action_devsecops_finding"
-              sequence="2"/>
-
-    <menuitem id="menu_devsecops_profiles"
-              name="Scan Profiles"
-              parent="menu_soc_devsecops_parent"
-              action="action_devsecops_profile"
-              sequence="3"/>
-
-    <!-- Configuration -->
-    <menuitem id="menu_soc_config_parent"
-              name="Configuration"
-              parent="menu_soc_root"
-              sequence="90"
-              groups="base.group_system"/>
-
-    <menuitem id="menu_soc_wazuh_config"
-              name="Wazuh Connector"
-              parent="menu_soc_config_parent"
-              action="action_soc_wazuh_config"
-              sequence="1"/>
-
-    <menuitem id="menu_soc_ai_config"
-              name="AI Agent"
-              parent="menu_soc_config_parent"
-              action="action_soc_ai_agent"
-              sequence="2"/>
-
-    <menuitem id="menu_soc_tunisia_ip"
-              name="Tunisia IP Ranges"
-              parent="menu_soc_config_parent"
-              action="action_soc_tunisia_ip"
-              sequence="3"/>
-
-    <menuitem id="menu_devsecops_jenkins"
-              name="Jenkins &amp; CI/CD"
-              parent="menu_soc_config_parent"
-              action="action_devsecops_jenkins"
-              sequence="10"/>
 
 </odoo>

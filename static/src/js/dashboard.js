@@ -6,7 +6,8 @@ import { useService } from "@web/core/utils/hooks";
 
 /**
  * SOC Management Dashboard Component
- * Displays real-time security metrics, charts, and alert summaries.
+ * Displays real-time security metrics, charts, alert summaries,
+ * 5-layer architecture overview, and OpenCTI results.
  */
 class SocDashboard extends Component {
     static template = "projetPfe-Soc_odoo.Dashboard";

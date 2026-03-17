@@ -1,5 +1,6 @@
 /* ══════════════════════════════════════════════════════════════════
    SOC Management Dashboard - Premium Dark Theme
+   5-Layer Architecture + OpenCTI Integration
    ══════════════════════════════════════════════════════════════════ */
 
 :root {
@@ -26,6 +27,23 @@
     --soc-gradient-red: linear-gradient(135deg, #d50000, #ff5252);
     --soc-gradient-orange: linear-gradient(135deg, #ff6d00, #ffab40);
     --soc-gradient-cyan: linear-gradient(135deg, #00838f, #18ffff);
+
+    /* Architecture Layer Colors */
+    --soc-layer-1: #E8836B;
+    --soc-layer-1-bg: rgba(232, 131, 107, 0.12);
+    --soc-layer-1-border: rgba(232, 131, 107, 0.35);
+    --soc-layer-2: #4A90D9;
+    --soc-layer-2-bg: rgba(74, 144, 217, 0.12);
+    --soc-layer-2-border: rgba(74, 144, 217, 0.35);
+    --soc-layer-3: #7BC67E;
+    --soc-layer-3-bg: rgba(123, 198, 126, 0.12);
+    --soc-layer-3-border: rgba(123, 198, 126, 0.35);
+    --soc-layer-4: #E8A94D;
+    --soc-layer-4-bg: rgba(232, 169, 77, 0.12);
+    --soc-layer-4-border: rgba(232, 169, 77, 0.35);
+    --soc-layer-5: #6C63FF;
+    --soc-layer-5-bg: rgba(108, 99, 255, 0.12);
+    --soc-layer-5-border: rgba(108, 99, 255, 0.35);
 }
 
 /* ─── Dashboard Container ─────────────────────────────────────── */
@@ -139,6 +157,478 @@
     background: var(--soc-bg-hover);
     border-color: var(--soc-accent-blue);
     box-shadow: 0 0 12px rgba(79, 195, 247, 0.2);
+}
+
+/* ─── Quick Links ─────────────────────────────────────────────── */
+.soc-quick-links {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding: 14px;
+    background: var(--soc-bg-secondary);
+    border-radius: var(--soc-radius);
+    border: 1px solid var(--soc-border);
+    flex-wrap: wrap;
+}
+
+.soc-quick-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: var(--soc-radius-sm);
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.soc-quick-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    filter: brightness(1.15);
+}
+
+.soc-quick-btn-blue { background: var(--soc-gradient-blue); }
+.soc-quick-btn-red { background: var(--soc-gradient-red); }
+.soc-quick-btn-orange { background: var(--soc-gradient-orange); }
+.soc-quick-btn-green { background: var(--soc-gradient-green); }
+.soc-quick-btn-purple { background: var(--soc-gradient-purple); }
+.soc-quick-btn-cyan { background: var(--soc-gradient-cyan); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SECTION TITLES
+   ═══════════════════════════════════════════════════════════════════ */
+
+.soc-section-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--soc-text-primary);
+}
+
+.soc-section-title i {
+    color: var(--soc-accent-blue);
+    font-size: 22px;
+}
+
+.soc-section-subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--soc-text-secondary);
+    margin-left: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ARCHITECTURE 5 LAYERS SECTION
+   ═══════════════════════════════════════════════════════════════════ */
+
+.soc-architecture-section {
+    background: var(--soc-bg-secondary);
+    border: 1px solid var(--soc-border);
+    border-radius: var(--soc-radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--soc-shadow);
+}
+
+.soc-layers-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
+/* ─── Individual Layer ────────────────────────────────────────── */
+.soc-layer {
+    width: 100%;
+    border-radius: var(--soc-radius);
+    padding: 16px 20px;
+    transition: all 0.3s ease;
+}
+
+.soc-layer:hover {
+    transform: scale(1.005);
+}
+
+.soc-layer-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.soc-layer-number {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.soc-layer-name {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.soc-layer-badge-optional {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(255, 82, 82, 0.25);
+    color: var(--soc-accent-red);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: auto;
+}
+
+.soc-layer-cards {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.soc-layer-card {
+    flex: 1;
+    min-width: 120px;
+    max-width: 200px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--soc-radius-sm);
+    padding: 12px 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.soc-layer-card:hover {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.soc-layer-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 4px;
+}
+
+.soc-layer-card-desc {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Layer Colors */
+.soc-layer-1 {
+    background: var(--soc-layer-1-bg);
+    border: 1px solid var(--soc-layer-1-border);
+}
+.soc-layer-1 .soc-layer-number,
+.soc-layer-1 .soc-layer-name {
+    color: var(--soc-layer-1);
+}
+
+.soc-layer-2 {
+    background: var(--soc-layer-2-bg);
+    border: 1px solid var(--soc-layer-2-border);
+}
+.soc-layer-2 .soc-layer-number,
+.soc-layer-2 .soc-layer-name {
+    color: var(--soc-layer-2);
+}
+
+.soc-layer-3 {
+    background: var(--soc-layer-3-bg);
+    border: 1px solid var(--soc-layer-3-border);
+}
+.soc-layer-3 .soc-layer-number,
+.soc-layer-3 .soc-layer-name {
+    color: var(--soc-layer-3);
+}
+
+.soc-layer-4 {
+    background: var(--soc-layer-4-bg);
+    border: 1px solid var(--soc-layer-4-border);
+}
+.soc-layer-4 .soc-layer-number,
+.soc-layer-4 .soc-layer-name {
+    color: var(--soc-layer-4);
+}
+
+.soc-layer-5 {
+    background: var(--soc-layer-5-bg);
+    border: 1px solid var(--soc-layer-5-border);
+}
+.soc-layer-5 .soc-layer-number,
+.soc-layer-5 .soc-layer-name {
+    color: var(--soc-layer-5);
+}
+
+.soc-layer-5-desc {
+    font-size: 14px;
+    color: var(--soc-text-secondary);
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.soc-layer-5-desc i {
+    color: var(--soc-layer-5);
+    animation: bounceDown 1.5s infinite;
+}
+
+@keyframes bounceDown {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+}
+
+/* ─── Flow Arrows Between Layers ──────────────────────────────── */
+.soc-layer-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    gap: 2px;
+}
+
+.soc-arrow-line {
+    width: 2px;
+    height: 14px;
+    background: linear-gradient(to bottom, var(--soc-border), var(--soc-accent-blue));
+}
+
+.soc-arrow-label {
+    font-size: 11px;
+    color: var(--soc-text-secondary);
+    font-style: italic;
+    padding: 2px 12px;
+    background: var(--soc-bg-primary);
+    border-radius: 10px;
+    border: 1px solid var(--soc-border);
+}
+
+.soc-arrow-icon {
+    color: var(--soc-accent-blue);
+    font-size: 14px;
+    animation: arrowPulse 2s infinite;
+}
+
+@keyframes arrowPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Split Arrow (Layer 3 → Layer 4 & 5) */
+.soc-arrow-split {
+    flex-direction: row;
+    justify-content: center;
+    gap: 80px;
+}
+
+.soc-arrow-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Bottom Layers (Side by Side) */
+.soc-layers-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   OPENCTI SECTION
+   ═══════════════════════════════════════════════════════════════════ */
+
+.soc-opencti-section {
+    background: var(--soc-bg-secondary);
+    border: 1px solid var(--soc-border);
+    border-radius: var(--soc-radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--soc-shadow);
+    border-left: 4px solid var(--soc-layer-2);
+}
+
+.soc-opencti-section .soc-section-title i {
+    color: var(--soc-layer-2);
+}
+
+.soc-opencti-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 16px;
+}
+
+.soc-opencti-status-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.soc-opencti-status {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+}
+
+.soc-opencti-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: var(--soc-bg-secondary);
+    border-radius: var(--soc-radius-sm);
+    border: 1px solid var(--soc-border);
+}
+
+.soc-status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.soc-status-dot-green {
+    background: var(--soc-accent-green);
+    box-shadow: 0 0 8px rgba(105, 240, 174, 0.5);
+    animation: pulse 2s infinite;
+}
+
+.soc-status-dot-red {
+    background: var(--soc-accent-red);
+    box-shadow: 0 0 8px rgba(255, 82, 82, 0.5);
+}
+
+.soc-status-text-ok {
+    color: var(--soc-accent-green);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.soc-status-text-err {
+    color: var(--soc-accent-red);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.soc-opencti-kpis {
+    display: flex;
+    gap: 12px;
+}
+
+.soc-opencti-kpi {
+    flex: 1;
+    text-align: center;
+    padding: 16px 12px;
+    background: var(--soc-bg-secondary);
+    border-radius: var(--soc-radius-sm);
+    border: 1px solid var(--soc-border);
+    transition: all 0.3s;
+}
+
+.soc-opencti-kpi:hover {
+    border-color: var(--soc-layer-2);
+    transform: translateY(-1px);
+}
+
+.soc-opencti-kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--soc-layer-2);
+}
+
+.soc-opencti-kpi-label {
+    font-size: 11px;
+    color: var(--soc-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 4px;
+}
+
+.soc-opencti-table-card {
+    min-height: 200px;
+}
+
+/* IOC Type badge */
+.soc-ioc-type {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: rgba(74, 144, 217, 0.15);
+    color: var(--soc-layer-2);
+    border: 1px solid rgba(74, 144, 217, 0.3);
+}
+
+.soc-ioc-value {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    color: var(--soc-text-primary);
+}
+
+.soc-ioc-score {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.soc-ioc-score-high {
+    background: rgba(255, 82, 82, 0.15);
+    color: var(--soc-accent-red);
+}
+
+.soc-ioc-score-medium {
+    background: rgba(255, 171, 64, 0.15);
+    color: var(--soc-accent-orange);
+}
+
+.soc-ioc-score-low {
+    background: rgba(105, 240, 174, 0.15);
+    color: var(--soc-accent-green);
+}
+
+/* ─── Empty Cell ──────────────────────────────────────────────── */
+.soc-empty-cell {
+    text-align: center;
+    color: var(--soc-text-secondary);
+    padding: 24px;
+    font-size: 13px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LAYER 5 SECTION (OPERATIONAL DASHBOARD)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.soc-layer5-section {
+    background: var(--soc-bg-secondary);
+    border: 1px solid var(--soc-border);
+    border-radius: var(--soc-radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--soc-shadow);
+    border-left: 4px solid var(--soc-layer-5);
+}
+
+.soc-layer5-section .soc-section-title i {
+    color: var(--soc-layer-5);
 }
 
 /* ─── KPI Cards ───────────────────────────────────────────────── */
@@ -598,6 +1088,12 @@
     .soc-bottom-row {
         grid-template-columns: 1fr;
     }
+    .soc-opencti-grid {
+        grid-template-columns: 1fr;
+    }
+    .soc-layers-bottom {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 768px) {
@@ -607,5 +1103,14 @@
     .soc-header {
         flex-direction: column;
         gap: 12px;
+    }
+    .soc-quick-links {
+        flex-direction: column;
+    }
+    .soc-layer-cards {
+        flex-direction: column;
+    }
+    .soc-arrow-split {
+        gap: 20px;
     }
 }

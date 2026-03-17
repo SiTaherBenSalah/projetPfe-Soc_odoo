@@ -180,6 +180,26 @@ class SocDashboard(models.Model):
         result = self.env.cr.fetchone()
         mttr = round(result[0], 1) if result and result[0] else 0
 
+        # ── OpenCTI Data (placeholder until pycti integration) ────────
+        opencti_data = {
+            'status': 'not_configured',
+            'total_indicators': 0,
+            'total_reports': 0,
+            'recent_indicators': [],
+            'recent_reports': [],
+        }
+
+        # Try to get real OpenCTI data if configured
+        try:
+            opencti_config = self.env['ir.config_parameter'].sudo()
+            opencti_url = opencti_config.get_param('soc.opencti_url', '')
+            opencti_token = opencti_config.get_param('soc.opencti_token', '')
+            if opencti_url and opencti_token:
+                opencti_data['status'] = 'configured'
+                opencti_data['url'] = opencti_url
+        except Exception as e:
+            _logger.warning("OpenCTI config check failed: %s", e)
+
         return {
             # Alert KPIs
             'total_alerts': total_alerts,
@@ -206,4 +226,6 @@ class SocDashboard(models.Model):
             # AI
             'ai_stats': ai_stats,
             'mttr': mttr,
+            # OpenCTI
+            'opencti_data': opencti_data,
         }

@@ -53,6 +53,7 @@
         'views/soc_devsecops_views.xml',
         'views/soc_ticket_views.xml',
         'views/soc_menus.xml',
+        'data/home_action_data.xml',
     ],
     'assets': {
         'web.assets_backend': [

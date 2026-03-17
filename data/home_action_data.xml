@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!--  Set SOC Dashboard as the default home action for all users  -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+
+    <!-- Set the SOC Dashboard as the default action for the admin user -->
+    <record id="base.user_admin" model="res.users">
+        <field name="action_id" ref="action_soc_dashboard"/>
+    </record>
+
+    <!-- Set the SOC Dashboard as the default action for the base user template -->
+    <record id="base.default_user" model="res.users">
+        <field name="action_id" ref="action_soc_dashboard"/>
+    </record>
+
+</odoo>
