@@ -5,8 +5,8 @@ import { Component, useState, onWillStart, onMounted, onWillUnmount, useRef } fr
 import { useService } from "@web/core/utils/hooks";
 
 /**
- * SOC Management Dashboard Component — Interactive Architecture
- * Displays real-time security metrics, interactive 5-layer architecture
+ * SOC Management Dashboard Component
+ * Displays real-time security metrics, pipeline phases
  * with expandable alert panels, smooth scrolling navigation, and
  * OpenCTI results.
  */
@@ -24,10 +24,10 @@ class SocDashboard extends Component {
             data: null,
             loading: true,
             lastRefresh: new Date().toLocaleTimeString(),
-            // Interactive architecture state
-            expandedLayer: null,
-            layerAlerts: [],
-            loadingLayerAlerts: false,
+            // Interactive pipeline state
+            expandedPhase: null,
+            phaseAlerts: [],
+            loadingPhaseAlerts: false,
             // Scroll navigation
             activeSection: "header",
         });
@@ -78,30 +78,30 @@ class SocDashboard extends Component {
         await this.loadDashboardData();
     }
 
-    // ── Interactive Architecture — Layer Toggle ──────────────────────
+    // ── Interactive Pipeline — Phase Toggle ──────────────────────
 
-    async toggleLayer(layerNum) {
-        if (this.state.expandedLayer === layerNum) {
+    async togglePhase(phaseNum) {
+        if (this.state.expandedPhase === phaseNum) {
             // Collapse if already expanded
-            this.state.expandedLayer = null;
-            this.state.layerAlerts = [];
+            this.state.expandedPhase = null;
+            this.state.phaseAlerts = [];
             return;
         }
 
-        this.state.expandedLayer = layerNum;
-        this.state.loadingLayerAlerts = true;
-        this.state.layerAlerts = [];
+        this.state.expandedPhase = phaseNum;
+        this.state.loadingPhaseAlerts = true;
+        this.state.phaseAlerts = [];
 
         try {
-            const result = await this.rpc("/soc/api/layer_alerts", {
-                layer: layerNum,
+            const result = await this.rpc("/soc/api/phase_alerts", {
+                phase: phaseNum,
             });
-            this.state.layerAlerts = result.alerts || [];
+            this.state.phaseAlerts = result.alerts || [];
         } catch (error) {
-            console.error(`Failed to load layer ${layerNum} alerts:`, error);
-            this.state.layerAlerts = [];
+            console.error(`Failed to load phase ${phaseNum} alerts:`, error);
+            this.state.phaseAlerts = [];
         } finally {
-            this.state.loadingLayerAlerts = false;
+            this.state.loadingPhaseAlerts = false;
         }
     }
 
@@ -125,7 +125,7 @@ class SocDashboard extends Component {
     }
 
     _setupScrollSpy() {
-        const sectionIds = ["header", "architecture", "opencti", "operational", "charts", "tables"];
+        const sectionIds = ["header", "metrics", "opencti", "operational", "charts", "tables"];
 
         this._scrollHandler = () => {
             const container = this._getScrollContainer();

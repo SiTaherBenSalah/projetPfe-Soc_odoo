@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════════════════════════════
    SOC Management Dashboard - Premium Dark Theme
-   5-Layer Interactive Architecture + Scrollable Navigation
+   5-phase Interactive metrics + Scrollable Navigation
    ══════════════════════════════════════════════════════════════════ */
 
 :root {
@@ -28,22 +28,22 @@
     --soc-gradient-orange: linear-gradient(135deg, #ff6d00, #ffab40);
     --soc-gradient-cyan: linear-gradient(135deg, #00838f, #18ffff);
 
-    /* Architecture Layer Colors */
-    --soc-layer-1: #E8836B;
-    --soc-layer-1-bg: rgba(232, 131, 107, 0.12);
-    --soc-layer-1-border: rgba(232, 131, 107, 0.35);
-    --soc-layer-2: #4A90D9;
-    --soc-layer-2-bg: rgba(74, 144, 217, 0.12);
-    --soc-layer-2-border: rgba(74, 144, 217, 0.35);
-    --soc-layer-3: #7BC67E;
-    --soc-layer-3-bg: rgba(123, 198, 126, 0.12);
-    --soc-layer-3-border: rgba(123, 198, 126, 0.35);
-    --soc-layer-4: #E8A94D;
-    --soc-layer-4-bg: rgba(232, 169, 77, 0.12);
-    --soc-layer-4-border: rgba(232, 169, 77, 0.35);
-    --soc-layer-5: #6C63FF;
-    --soc-layer-5-bg: rgba(108, 99, 255, 0.12);
-    --soc-layer-5-border: rgba(108, 99, 255, 0.35);
+    /* metrics phase Colors */
+    --soc-phase-1: #E8836B;
+    --soc-phase-1-bg: rgba(232, 131, 107, 0.12);
+    --soc-phase-1-border: rgba(232, 131, 107, 0.35);
+    --soc-phase-2: #4A90D9;
+    --soc-phase-2-bg: rgba(74, 144, 217, 0.12);
+    --soc-phase-2-border: rgba(74, 144, 217, 0.35);
+    --soc-phase-3: #7BC67E;
+    --soc-phase-3-bg: rgba(123, 198, 126, 0.12);
+    --soc-phase-3-border: rgba(123, 198, 126, 0.35);
+    --soc-phase-4: #E8A94D;
+    --soc-phase-4-bg: rgba(232, 169, 77, 0.12);
+    --soc-phase-4-border: rgba(232, 169, 77, 0.35);
+    --soc-phase-5: #6C63FF;
+    --soc-phase-5-bg: rgba(108, 99, 255, 0.12);
+    --soc-phase-5-border: rgba(108, 99, 255, 0.35);
 
     /* Sidebar width */
     --soc-sidebar-width: 56px;
@@ -331,10 +331,10 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   ARCHITECTURE 5 LAYERS — INTERACTIVE
+   metrics 5 phaseS — INTERACTIVE
    ═══════════════════════════════════════════════════════════════════ */
 
-.soc-architecture-section {
+.soc-metrics-section {
     background: var(--soc-bg-secondary);
     border: 1px solid var(--soc-border);
     border-radius: var(--soc-radius);
@@ -344,42 +344,42 @@
     scroll-margin-top: 20px;
 }
 
-.soc-layers-container {
+.soc-phases-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0;
 }
 
-/* ─── Individual Layer — Interactive ──────────────────────────── */
-.soc-layer {
+/* ─── Individual phase — Interactive ──────────────────────────── */
+.soc-phase {
     width: 100%;
     border-radius: var(--soc-radius);
     padding: 16px 20px;
     transition: all 0.3s ease;
 }
 
-.soc-layer-interactive {
+.soc-phase-interactive {
     cursor: pointer;
     position: relative;
 }
 
-.soc-layer-interactive:hover {
+.soc-phase-interactive:hover {
     transform: scale(1.008);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-.soc-layer-interactive:hover .soc-layer-toggle-icon {
+.soc-phase-interactive:hover .soc-phase-toggle-icon {
     opacity: 1;
     color: var(--soc-text-primary);
 }
 
-.soc-layer-expanded {
+.soc-phase-expanded {
     box-shadow: 0 6px 32px rgba(0, 0, 0, 0.35) !important;
     transform: scale(1.005);
 }
 
-.soc-layer-toggle-icon {
+.soc-phase-toggle-icon {
     margin-left: auto;
     font-size: 14px;
     color: var(--soc-text-secondary);
@@ -387,14 +387,14 @@
     transition: all 0.3s ease;
 }
 
-.soc-layer-header {
+.soc-phase-header {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 12px;
 }
 
-.soc-layer-number {
+.soc-phase-number {
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
@@ -404,12 +404,12 @@
     background: rgba(255, 255, 255, 0.15);
 }
 
-.soc-layer-name {
+.soc-phase-name {
     font-size: 16px;
     font-weight: 700;
 }
 
-.soc-layer-badge-optional {
+.soc-phase-badge-optional {
     font-size: 10px;
     font-weight: 700;
     padding: 3px 10px;
@@ -420,15 +420,15 @@
     letter-spacing: 0.5px;
 }
 
-/* ─── Layer Stats Badges (inline in header) ───────────────────── */
-.soc-layer-stats {
+/* ─── phase Stats Badges (inline in header) ───────────────────── */
+.soc-phase-stats {
     display: flex;
     gap: 8px;
     margin-left: auto;
     margin-right: 12px;
 }
 
-.soc-layer-stat-badge {
+.soc-phase-stat-badge {
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -439,48 +439,48 @@
     transition: all 0.3s ease;
 }
 
-.soc-layer-stat-badge i {
+.soc-phase-stat-badge i {
     font-size: 11px;
 }
 
-.soc-layer-stat-count {
+.soc-phase-stat-count {
     background: rgba(232, 131, 107, 0.2);
-    color: var(--soc-layer-1);
+    color: var(--soc-phase-1);
     border: 1px solid rgba(232, 131, 107, 0.3);
 }
 
-.soc-layer-stat-other {
+.soc-phase-stat-other {
     background: rgba(79, 195, 247, 0.15);
     color: var(--soc-accent-blue);
     border: 1px solid rgba(79, 195, 247, 0.25);
 }
 
-.soc-layer-stat-cti {
+.soc-phase-stat-cti {
     background: rgba(74, 144, 217, 0.2);
-    color: var(--soc-layer-2);
+    color: var(--soc-phase-2);
     border: 1px solid rgba(74, 144, 217, 0.3);
 }
 
-.soc-layer-stat-ai {
+.soc-phase-stat-ai {
     background: rgba(123, 198, 126, 0.2);
-    color: var(--soc-layer-3);
+    color: var(--soc-phase-3);
     border: 1px solid rgba(123, 198, 126, 0.3);
 }
 
-.soc-layer-stat-fp {
+.soc-phase-stat-fp {
     background: rgba(255, 82, 82, 0.15);
     color: var(--soc-accent-red);
     border: 1px solid rgba(255, 82, 82, 0.25);
 }
 
-/* ─── Layer Cards — Enhanced ──────────────────────────────────── */
-.soc-layer-cards {
+/* ─── phase Cards — Enhanced ──────────────────────────────────── */
+.soc-phase-cards {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
 }
 
-.soc-layer-card {
+.soc-phase-card {
     flex: 1;
     min-width: 120px;
     max-width: 200px;
@@ -493,41 +493,41 @@
     position: relative;
 }
 
-.soc-layer-card:hover {
+.soc-phase-card:hover {
     background: rgba(255, 255, 255, 0.14);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.soc-layer-card-interactive {
+.soc-phase-card-interactive {
     border-color: rgba(255, 255, 255, 0.12);
     cursor: pointer;
 }
 
-.soc-layer-card-interactive:hover {
+.soc-phase-card-interactive:hover {
     border-color: rgba(79, 195, 247, 0.4);
     box-shadow: 0 4px 16px rgba(79, 195, 247, 0.15);
 }
 
-.soc-layer-card-icon {
+.soc-phase-card-icon {
     font-size: 20px;
     margin-bottom: 6px;
     opacity: 0.85;
 }
 
-.soc-layer-card-title {
+.soc-phase-card-title {
     font-size: 14px;
     font-weight: 700;
     color: white;
     margin-bottom: 4px;
 }
 
-.soc-layer-card-desc {
+.soc-phase-card-desc {
     font-size: 11px;
     color: rgba(255, 255, 255, 0.7);
 }
 
-.soc-layer-card-count {
+.soc-phase-card-count {
     margin-top: 6px;
     font-size: 18px;
     font-weight: 800;
@@ -535,58 +535,58 @@
     text-shadow: 0 0 8px rgba(24, 255, 255, 0.3);
 }
 
-/* Layer Colors */
-.soc-layer-1 {
-    background: var(--soc-layer-1-bg);
-    border: 1px solid var(--soc-layer-1-border);
+/* phase Colors */
+.soc-phase-1 {
+    background: var(--soc-phase-1-bg);
+    border: 1px solid var(--soc-phase-1-border);
 }
-.soc-layer-1 .soc-layer-number,
-.soc-layer-1 .soc-layer-name {
-    color: var(--soc-layer-1);
+.soc-phase-1 .soc-phase-number,
+.soc-phase-1 .soc-phase-name {
+    color: var(--soc-phase-1);
 }
-.soc-layer-1 .soc-layer-card-icon { color: var(--soc-layer-1); }
+.soc-phase-1 .soc-phase-card-icon { color: var(--soc-phase-1); }
 
-.soc-layer-2 {
-    background: var(--soc-layer-2-bg);
-    border: 1px solid var(--soc-layer-2-border);
+.soc-phase-2 {
+    background: var(--soc-phase-2-bg);
+    border: 1px solid var(--soc-phase-2-border);
 }
-.soc-layer-2 .soc-layer-number,
-.soc-layer-2 .soc-layer-name {
-    color: var(--soc-layer-2);
+.soc-phase-2 .soc-phase-number,
+.soc-phase-2 .soc-phase-name {
+    color: var(--soc-phase-2);
 }
-.soc-layer-2 .soc-layer-card-icon { color: var(--soc-layer-2); }
+.soc-phase-2 .soc-phase-card-icon { color: var(--soc-phase-2); }
 
-.soc-layer-3 {
-    background: var(--soc-layer-3-bg);
-    border: 1px solid var(--soc-layer-3-border);
+.soc-phase-3 {
+    background: var(--soc-phase-3-bg);
+    border: 1px solid var(--soc-phase-3-border);
 }
-.soc-layer-3 .soc-layer-number,
-.soc-layer-3 .soc-layer-name {
-    color: var(--soc-layer-3);
+.soc-phase-3 .soc-phase-number,
+.soc-phase-3 .soc-phase-name {
+    color: var(--soc-phase-3);
 }
-.soc-layer-3 .soc-layer-card-icon { color: var(--soc-layer-3); }
+.soc-phase-3 .soc-phase-card-icon { color: var(--soc-phase-3); }
 
-.soc-layer-4 {
-    background: var(--soc-layer-4-bg);
-    border: 1px solid var(--soc-layer-4-border);
+.soc-phase-4 {
+    background: var(--soc-phase-4-bg);
+    border: 1px solid var(--soc-phase-4-border);
 }
-.soc-layer-4 .soc-layer-number,
-.soc-layer-4 .soc-layer-name {
-    color: var(--soc-layer-4);
+.soc-phase-4 .soc-phase-number,
+.soc-phase-4 .soc-phase-name {
+    color: var(--soc-phase-4);
 }
-.soc-layer-4 .soc-layer-card-icon { color: var(--soc-layer-4); }
+.soc-phase-4 .soc-phase-card-icon { color: var(--soc-phase-4); }
 
-.soc-layer-5 {
-    background: var(--soc-layer-5-bg);
-    border: 1px solid var(--soc-layer-5-border);
+.soc-phase-5 {
+    background: var(--soc-phase-5-bg);
+    border: 1px solid var(--soc-phase-5-border);
 }
-.soc-layer-5 .soc-layer-number,
-.soc-layer-5 .soc-layer-name {
-    color: var(--soc-layer-5);
+.soc-phase-5 .soc-phase-number,
+.soc-phase-5 .soc-phase-name {
+    color: var(--soc-phase-5);
 }
-.soc-layer-5 .soc-layer-card-icon { color: var(--soc-layer-5); }
+.soc-phase-5 .soc-phase-card-icon { color: var(--soc-phase-5); }
 
-.soc-layer-5-desc {
+.soc-phase-5-desc {
     font-size: 14px;
     color: var(--soc-text-secondary);
     padding: 10px 0;
@@ -595,8 +595,8 @@
     gap: 8px;
 }
 
-.soc-layer-5-desc i {
-    color: var(--soc-layer-5);
+.soc-phase-5-desc i {
+    color: var(--soc-phase-5);
     animation: bounceDown 1.5s infinite;
 }
 
@@ -606,10 +606,10 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   EXPANDED LAYER ALERT PANEL
+   EXPANDED phase ALERT PANEL
    ═══════════════════════════════════════════════════════════════════ */
 
-.soc-layer-alert-panel {
+.soc-phase-alert-panel {
     margin-top: 16px;
     padding: 16px;
     background: rgba(0, 0, 0, 0.25);
@@ -632,7 +632,7 @@
     }
 }
 
-.soc-layer-alert-header {
+.soc-phase-alert-header {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -644,11 +644,11 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.soc-layer-alert-header i {
+.soc-phase-alert-header i {
     color: var(--soc-accent-blue);
 }
 
-.soc-layer-alert-viewall {
+.soc-phase-alert-viewall {
     margin-left: auto;
     padding: 5px 12px;
     background: rgba(79, 195, 247, 0.12);
@@ -661,12 +661,12 @@
     transition: all 0.2s;
 }
 
-.soc-layer-alert-viewall:hover {
+.soc-phase-alert-viewall:hover {
     background: rgba(79, 195, 247, 0.22);
     border-color: var(--soc-accent-blue);
 }
 
-.soc-layer-alert-table {
+.soc-phase-alert-table {
     font-size: 13px;
 }
 
@@ -678,7 +678,7 @@
     white-space: nowrap;
 }
 
-/* ─── AI Analysis Grid (Layer 3 expanded) ─────────────────────── */
+/* ─── AI Analysis Grid (phase 3 expanded) ─────────────────────── */
 .soc-ai-analysis-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -703,7 +703,7 @@
 .soc-ai-stat-value {
     font-size: 28px;
     font-weight: 800;
-    color: var(--soc-layer-3);
+    color: var(--soc-phase-3);
     margin-bottom: 4px;
 }
 
@@ -741,7 +741,7 @@
     border: 1px solid rgba(105, 240, 174, 0.3);
 }
 
-/* ─── SOAR Info Cards (Layer 4 expanded) ──────────────────────── */
+/* ─── SOAR Info Cards (phase 4 expanded) ──────────────────────── */
 .soc-soar-info {
     display: flex;
     flex-direction: column;
@@ -767,14 +767,14 @@
 }
 
 .soc-soar-card i {
-    color: var(--soc-layer-4);
+    color: var(--soc-phase-4);
     font-size: 18px;
     width: 24px;
     text-align: center;
     flex-shrink: 0;
 }
 
-/* ─── Escalation Summary (Layer 5 expanded) ───────────────────── */
+/* ─── Escalation Summary (phase 5 expanded) ───────────────────── */
 .soc-escalation-summary {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -798,7 +798,7 @@
 .soc-escalation-val {
     font-size: 28px;
     font-weight: 800;
-    color: var(--soc-layer-5);
+    color: var(--soc-phase-5);
     margin-bottom: 4px;
 }
 
@@ -813,8 +813,8 @@
     letter-spacing: 0.3px;
 }
 
-/* ─── Flow Arrows Between Layers ──────────────────────────────── */
-.soc-layer-arrow {
+/* ─── Flow Arrows Between phases ──────────────────────────────── */
+.soc-phase-arrow {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -849,7 +849,7 @@
     50% { opacity: 1; }
 }
 
-/* Split Arrow (Layer 3 → Layer 4 & 5) */
+/* Split Arrow (phase 3 → phase 4 & 5) */
 .soc-arrow-split {
     flex-direction: row;
     justify-content: center;
@@ -863,8 +863,8 @@
     gap: 4px;
 }
 
-/* Bottom Layers (Side by Side) */
-.soc-layers-bottom {
+/* Bottom phases (Side by Side) */
+.soc-phases-bottom {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
@@ -882,12 +882,12 @@
     padding: 24px;
     margin-bottom: 24px;
     box-shadow: var(--soc-shadow);
-    border-left: 4px solid var(--soc-layer-2);
+    border-left: 4px solid var(--soc-phase-2);
     scroll-margin-top: 20px;
 }
 
 .soc-opencti-section .soc-section-title i {
-    color: var(--soc-layer-2);
+    color: var(--soc-phase-2);
 }
 
 .soc-opencti-grid {
@@ -964,14 +964,14 @@
 }
 
 .soc-opencti-kpi:hover {
-    border-color: var(--soc-layer-2);
+    border-color: var(--soc-phase-2);
     transform: translateY(-1px);
 }
 
 .soc-opencti-kpi-value {
     font-size: 28px;
     font-weight: 700;
-    color: var(--soc-layer-2);
+    color: var(--soc-phase-2);
 }
 
 .soc-opencti-kpi-label {
@@ -995,7 +995,7 @@
     font-weight: 600;
     text-transform: uppercase;
     background: rgba(74, 144, 217, 0.15);
-    color: var(--soc-layer-2);
+    color: var(--soc-phase-2);
     border: 1px solid rgba(74, 144, 217, 0.3);
 }
 
@@ -1037,22 +1037,22 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   LAYER 5 SECTION (OPERATIONAL DASHBOARD)
+   phase 5 SECTION (OPERATIONAL DASHBOARD)
    ═══════════════════════════════════════════════════════════════════ */
 
-.soc-layer5-section {
+.soc-phase5-section {
     background: var(--soc-bg-secondary);
     border: 1px solid var(--soc-border);
     border-radius: var(--soc-radius);
     padding: 24px;
     margin-bottom: 24px;
     box-shadow: var(--soc-shadow);
-    border-left: 4px solid var(--soc-layer-5);
+    border-left: 4px solid var(--soc-phase-5);
     scroll-margin-top: 20px;
 }
 
-.soc-layer5-section .soc-section-title i {
-    color: var(--soc-layer-5);
+.soc-phase5-section .soc-section-title i {
+    color: var(--soc-phase-5);
 }
 
 /* ─── KPI Cards ───────────────────────────────────────────────── */
@@ -1517,7 +1517,7 @@
     .soc-opencti-grid {
         grid-template-columns: 1fr;
     }
-    .soc-layers-bottom {
+    .soc-phases-bottom {
         grid-template-columns: 1fr;
     }
     .soc-ai-analysis-grid {
@@ -1542,16 +1542,16 @@
     .soc-quick-links {
         flex-direction: column;
     }
-    .soc-layer-cards {
+    .soc-phase-cards {
         flex-direction: column;
     }
-    .soc-layer-cards .soc-layer-card {
+    .soc-phase-cards .soc-phase-card {
         max-width: none;
     }
     .soc-arrow-split {
         gap: 20px;
     }
-    .soc-layer-stats {
+    .soc-phase-stats {
         display: none;
     }
     .soc-ai-analysis-grid {

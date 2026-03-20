@@ -200,13 +200,13 @@ class SocDashboard(models.Model):
         except Exception as e:
             _logger.warning("OpenCTI config check failed: %s", e)
 
-        # ── Layer Stats ───────────────────────────────────────────────
+        # ── Phase Stats ───────────────────────────────────────────────
         wazuh_alerts_count = alert_model.search_count([('source', '=', 'wazuh')])
         other_alerts_count = alert_model.search_count([('source', '!=', 'wazuh')])
         ai_analyzed_count = alert_model.search_count([('ai_analysis', '!=', False)])
         ai_fp_count = alert_model.search_count([('ai_is_false_positive', '=', True)])
 
-        layer_stats = {
+        phase_stats = {
             'wazuh_alerts': wazuh_alerts_count,
             'other_alerts': other_alerts_count,
             'ai_analyzed': ai_analyzed_count,
@@ -242,32 +242,32 @@ class SocDashboard(models.Model):
             'mttr': mttr,
             # OpenCTI
             'opencti_data': opencti_data,
-            # Layer Stats
-            'layer_stats': layer_stats,
+            # Phase Stats
+            'phase_stats': phase_stats,
         }
 
     @api.model
-    def get_layer_alerts(self, layer):
+    def get_phase_alerts(self, phase):
         """
-        Return alerts relevant to a specific architecture layer.
-        Called when a user expands a layer in the interactive architecture.
+        Return alerts relevant to a specific phase.
+        Called when a user expands a phase metrics card.
         
-        Layer 1 (Detection): Recent alerts from Wazuh/detection sources
-        Layer 2 (Threat Intel): Handled client-side (OpenCTI data)
-        Layer 3 (IA & Analysis): AI-analyzed alerts
-        Layer 4 (SOAR): Handled client-side (info cards)
-        Layer 5 (Dashboard): Escalated alerts
+        Phase 1 (Detection): Recent alerts from Wazuh/detection sources
+        Phase 2 (Threat Intel): Handled client-side (OpenCTI data)
+        Phase 3 (IA & Analysis): AI-analyzed alerts
+        Phase 4 (SOAR): Handled client-side (info cards)
+        Phase 5 (Dashboard): Escalated alerts
         """
         alert_model = self.env['soc.alert']
         alerts = []
 
         try:
-            layer = int(layer) if layer else 0
+            phase = int(phase) if phase else 0
         except (ValueError, TypeError):
-            layer = 0
+            phase = 0
 
-        if layer == 1:
-            # Layer 1: Detection — recent Wazuh alerts
+        if phase == 1:
+            # Phase 1: Detection — recent Wazuh alerts
             records = alert_model.search([
                 ('source', '=', 'wazuh'),
                 ('state', 'not in', ['false_positive', 'closed']),
@@ -281,8 +281,8 @@ class SocDashboard(models.Model):
                 'timestamp': a.timestamp.strftime('%Y-%m-%d %H:%M') if a.timestamp else '',
             } for a in records]
 
-        elif layer == 3:
-            # Layer 3: IA & Analyse — AI-analyzed alerts
+        elif phase == 3:
+            # Phase 3: IA & Analyse — AI-analyzed alerts
             records = alert_model.search([
                 ('ai_analysis', '!=', False),
             ], limit=10, order='timestamp desc')
@@ -296,8 +296,8 @@ class SocDashboard(models.Model):
                 'timestamp': a.timestamp.strftime('%Y-%m-%d %H:%M') if a.timestamp else '',
             } for a in records]
 
-        elif layer == 5:
-            # Layer 5: Dashboard — escalated alerts
+        elif phase == 5:
+            # Phase 5: Dashboard — escalated alerts
             records = alert_model.search([
                 ('state', '=', 'escalated'),
             ], limit=10, order='timestamp desc')
@@ -310,6 +310,6 @@ class SocDashboard(models.Model):
                 'timestamp': a.timestamp.strftime('%Y-%m-%d %H:%M') if a.timestamp else '',
             } for a in records]
 
-        # Layers 2 and 4 are handled client-side
+        # Phases 2 and 4 are handled client-side
         return {'alerts': alerts}
 

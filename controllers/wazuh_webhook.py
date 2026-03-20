@@ -166,20 +166,20 @@ class WazuhWebhookController(http.Controller):
         return dashboard.get_dashboard_data()
 
     @http.route(
-        '/soc/api/layer_alerts',
+        '/soc/api/phase_alerts',
         type='json',
         auth='user',
         methods=['POST'],
     )
-    def get_layer_alerts(self, layer=None, **kwargs):
-        """API endpoint for layer-specific alerts (interactive architecture).
+    def get_phase_alerts(self, phase=None, **kwargs):
+        """API endpoint for phase-specific alerts.
         
-        Returns alerts relevant to the specified architecture layer:
-        - Layer 1 (Detection): Recent Wazuh/detection source alerts
-        - Layer 2 (Threat Intel): OpenCTI IOC indicators (handled client-side)
-        - Layer 3 (IA & Analysis): AI-analyzed alerts
-        - Layer 4 (SOAR): Automated response info (handled client-side)
-        - Layer 5 (Dashboard): Escalated alerts
+        Returns alerts relevant to the specified phase:
+        - Phase 1 (Detection): Recent Wazuh/detection source alerts
+        - Phase 2 (Threat Intel): OpenCTI IOC indicators (handled client-side)
+        - Phase 3 (IA & Analysis): AI-analyzed alerts
+        - Phase 4 (SOAR): Automated response info (handled client-side)
+        - Phase 5 (Dashboard): Escalated alerts
         """
         dashboard = request.env['soc.dashboard'].sudo()
-        return dashboard.get_layer_alerts(layer)
+        return dashboard.get_phase_alerts(phase)
