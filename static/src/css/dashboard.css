@@ -3,8 +3,6 @@
    5-Layer Interactive Architecture + Scrollable Navigation
    ══════════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root {
     --soc-bg-primary: #0f1419;
     --soc-bg-secondary: #1a1f2e;
