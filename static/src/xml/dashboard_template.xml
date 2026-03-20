@@ -2,11 +2,11 @@
 <templates xml:space="preserve">
 
     <!-- ══════════════════════════════════════════════════════════════ -->
-    <!--  SOC Dashboard OWL Template                                    -->
+    <!--  SOC Dashboard OWL Template — Interactive Architecture        -->
     <!-- ══════════════════════════════════════════════════════════════ -->
 
     <t t-name="projetPfe-Soc_odoo.Dashboard">
-        <div class="soc-dashboard">
+        <div class="soc-dashboard" t-ref="dashboardRoot">
 
             <!-- Loading State -->
             <t t-if="state.loading and !state.data">
@@ -19,13 +19,46 @@
             <!-- Dashboard Content -->
             <t t-if="state.data">
 
-                <!-- ─── Header ────────────────────────────────────── -->
-                <div class="soc-header">
+                <!-- ─── Floating Sidebar Nav ─────────────────────────── -->
+                <div class="soc-sidebar-nav">
+                    <button class="soc-sidebar-btn" t-att-class="{'active': state.activeSection === 'header'}"
+                            t-on-click="() => this.scrollToSection('header')">
+                        <i class="fa fa-shield"/> <span>SOC</span>
+                    </button>
+                    <button class="soc-sidebar-btn" t-att-class="{'active': state.activeSection === 'architecture'}"
+                            t-on-click="() => this.scrollToSection('architecture')">
+                        <i class="fa fa-sitemap"/> <span>Architecture</span>
+                    </button>
+                    <button class="soc-sidebar-btn" t-att-class="{'active': state.activeSection === 'opencti'}"
+                            t-on-click="() => this.scrollToSection('opencti')">
+                        <i class="fa fa-database"/> <span>OpenCTI</span>
+                    </button>
+                    <button class="soc-sidebar-btn" t-att-class="{'active': state.activeSection === 'operational'}"
+                            t-on-click="() => this.scrollToSection('operational')">
+                        <i class="fa fa-tachometer"/> <span>Dashboard</span>
+                    </button>
+                    <button class="soc-sidebar-btn" t-att-class="{'active': state.activeSection === 'charts'}"
+                            t-on-click="() => this.scrollToSection('charts')">
+                        <i class="fa fa-bar-chart"/> <span>Charts</span>
+                    </button>
+                    <button class="soc-sidebar-btn" t-att-class="{'active': state.activeSection === 'tables'}"
+                            t-on-click="() => this.scrollToSection('tables')">
+                        <i class="fa fa-table"/> <span>Tables</span>
+                    </button>
+                    <!-- Scroll to top button -->
+                    <button class="soc-sidebar-btn soc-scroll-top-btn"
+                            t-on-click="scrollToTop">
+                        <i class="fa fa-arrow-up"/> <span>Top</span>
+                    </button>
+                </div>
+
+                <!-- ─── Header ────────────────────────────────── -->
+                <div class="soc-header" id="section-header" t-ref="section-header">
                     <div class="soc-header-left">
                         <div class="soc-header-icon">🛡️</div>
                         <div>
                             <h1>SOC Dashboard</h1>
-                            <p class="soc-subtitle">Security Operations Center — Architecture 5 Couches</p>
+                            <p class="soc-subtitle">Security Operations Center — Architecture 5 Couches Interactive</p>
                         </div>
                     </div>
                     <div class="soc-header-right">
@@ -62,122 +95,325 @@
                 </div>
 
                 <!-- ═══════════════════════════════════════════════════════ -->
-                <!--  ARCHITECTURE SOC — 5 COUCHES                          -->
+                <!--  ARCHITECTURE SOC — 5 COUCHES INTERACTIVES             -->
                 <!-- ═══════════════════════════════════════════════════════ -->
 
-                <div class="soc-architecture-section">
+                <div class="soc-architecture-section" id="section-architecture" t-ref="section-architecture">
                     <div class="soc-section-title">
-                        <i class="fa fa-sitemap"/> Architecture SOC — 5 Couches
-                        <span class="soc-section-subtitle">Flux de traitement d'une alerte de la détection à la gestion</span>
+                        <i class="fa fa-sitemap"/> Architecture SOC — 5 Couches Interactives
+                        <span class="soc-section-subtitle">Cliquez sur une couche pour voir les alertes et détails associés</span>
                     </div>
 
                     <div class="soc-layers-container">
 
-                        <!-- Layer 1: Detection -->
-                        <div class="soc-layer soc-layer-1">
+                        <!-- ══════════ Layer 1: Detection ══════════ -->
+                        <div t-att-class="'soc-layer soc-layer-1 soc-layer-interactive' + (state.expandedLayer === 1 ? ' soc-layer-expanded' : '')"
+                             t-on-click="() => this.toggleLayer(1)">
                             <div class="soc-layer-header">
                                 <span class="soc-layer-number">LAYER 1</span>
                                 <span class="soc-layer-name">Détection</span>
+                                <div class="soc-layer-stats">
+                                    <span class="soc-layer-stat-badge soc-layer-stat-count">
+                                        <i class="fa fa-bell"/> <t t-esc="state.data.layer_stats.wazuh_alerts || 0"/> alertes Wazuh
+                                    </span>
+                                    <span class="soc-layer-stat-badge soc-layer-stat-other">
+                                        <i class="fa fa-plus-circle"/> <t t-esc="state.data.layer_stats.other_alerts || 0"/> autres
+                                    </span>
+                                </div>
+                                <i t-att-class="'fa soc-layer-toggle-icon ' + (state.expandedLayer === 1 ? 'fa-chevron-up' : 'fa-chevron-down')"/>
                             </div>
                             <div class="soc-layer-cards">
-                                <div class="soc-layer-card">
+                                <div class="soc-layer-card soc-layer-card-interactive" t-on-click.stop="openWazuhAlerts">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-shield"/></div>
                                     <div class="soc-layer-card-title">Wazuh</div>
                                     <div class="soc-layer-card-desc">SIEM / XDR</div>
+                                    <div class="soc-layer-card-count" t-esc="state.data.layer_stats.wazuh_alerts || 0"/>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-eye"/></div>
                                     <div class="soc-layer-card-title">Suricata</div>
                                     <div class="soc-layer-card-desc">IDS réseau</div>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-bug"/></div>
                                     <div class="soc-layer-card-title">ClamAV</div>
                                     <div class="soc-layer-card-desc">Antivirus</div>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-file-code-o"/></div>
                                     <div class="soc-layer-card-title">YARA</div>
                                     <div class="soc-layer-card-desc">Signatures</div>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-desktop"/></div>
                                     <div class="soc-layer-card-title">Agents</div>
                                     <div class="soc-layer-card-desc">OS / logs</div>
                                 </div>
                             </div>
+
+                            <!-- Expanded Alert Panel for Layer 1 -->
+                            <t t-if="state.expandedLayer === 1">
+                                <div class="soc-layer-alert-panel" t-on-click.stop="">
+                                    <div class="soc-layer-alert-header">
+                                        <i class="fa fa-bell"/> Alertes de Détection Récentes
+                                        <button class="soc-layer-alert-viewall" t-on-click.stop="openAlerts">
+                                            Voir tout <i class="fa fa-external-link"/>
+                                        </button>
+                                    </div>
+                                    <t t-if="state.layerAlerts.length">
+                                        <table class="soc-table soc-layer-alert-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Titre</th>
+                                                    <th>Sévérité</th>
+                                                    <th>Source IP</th>
+                                                    <th>Heure</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.layerAlerts" t-as="alert" t-key="alert.id">
+                                                    <tr t-on-click.stop="() => this.openAlert(alert.id)"
+                                                        style="cursor: pointer;">
+                                                        <td t-esc="alert.name"/>
+                                                        <td>
+                                                            <span class="soc-alert-title-cell" t-esc="alert.title"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-attf-class="soc-severity-badge soc-severity-#{alert.severity}"
+                                                                  t-esc="alert.severity"/>
+                                                        </td>
+                                                        <td t-esc="alert.source_ip"/>
+                                                        <td style="white-space: nowrap;" t-esc="alert.timestamp"/>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="soc-empty-cell">
+                                            <i class="fa fa-check-circle"/> Aucune alerte de détection récente
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
                         </div>
 
-                        <!-- Flow Arrow -->
+                        <!-- Flow Arrow 1→2 -->
                         <div class="soc-layer-arrow">
                             <div class="soc-arrow-line"/>
                             <div class="soc-arrow-label">alertes brutes</div>
                             <i class="fa fa-chevron-down soc-arrow-icon"/>
                         </div>
 
-                        <!-- Layer 2: Threat Intelligence -->
-                        <div class="soc-layer soc-layer-2">
+                        <!-- ══════════ Layer 2: Threat Intelligence ══════════ -->
+                        <div t-att-class="'soc-layer soc-layer-2 soc-layer-interactive' + (state.expandedLayer === 2 ? ' soc-layer-expanded' : '')"
+                             t-on-click="() => this.toggleLayer(2)">
                             <div class="soc-layer-header">
                                 <span class="soc-layer-number">LAYER 2</span>
                                 <span class="soc-layer-name">Threat Intelligence</span>
+                                <div class="soc-layer-stats">
+                                    <span class="soc-layer-stat-badge soc-layer-stat-cti">
+                                        <i class="fa fa-database"/> <t t-esc="state.data.opencti_data.total_indicators || 0"/> indicateurs
+                                    </span>
+                                </div>
+                                <i t-att-class="'fa soc-layer-toggle-icon ' + (state.expandedLayer === 2 ? 'fa-chevron-up' : 'fa-chevron-down')"/>
                             </div>
                             <div class="soc-layer-cards">
-                                <div class="soc-layer-card">
+                                <div class="soc-layer-card soc-layer-card-interactive">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-database"/></div>
                                     <div class="soc-layer-card-title">OpenCTI</div>
                                     <div class="soc-layer-card-desc">Plateforme CTI</div>
+                                    <div class="soc-layer-card-count" t-esc="state.data.opencti_data.total_indicators || 0"/>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-shield"/></div>
                                     <div class="soc-layer-card-title">MITRE</div>
                                     <div class="soc-layer-card-desc">ATT&amp;CK</div>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-globe"/></div>
                                     <div class="soc-layer-card-title">OTX</div>
                                     <div class="soc-layer-card-desc">AlienVault</div>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-warning"/></div>
                                     <div class="soc-layer-card-title">abuse.ch</div>
                                     <div class="soc-layer-card-desc">MalwareBazaar</div>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-search"/></div>
                                     <div class="soc-layer-card-title">VirusTotal</div>
                                     <div class="soc-layer-card-desc">Hash / URL</div>
                                 </div>
                             </div>
+
+                            <!-- Expanded Panel for Layer 2 — IOC indicators -->
+                            <t t-if="state.expandedLayer === 2">
+                                <div class="soc-layer-alert-panel" t-on-click.stop="">
+                                    <div class="soc-layer-alert-header">
+                                        <i class="fa fa-crosshairs"/> Indicateurs IOC récents (OpenCTI)
+                                    </div>
+                                    <t t-if="state.data.opencti_data.recent_indicators.length">
+                                        <table class="soc-table soc-layer-alert-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Valeur</th>
+                                                    <th>Score</th>
+                                                    <th>Source</th>
+                                                    <th>Dernière vue</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.data.opencti_data.recent_indicators" t-as="ioc" t-key="ioc.id">
+                                                    <tr>
+                                                        <td>
+                                                            <span class="soc-ioc-type" t-esc="ioc.type"/>
+                                                        </td>
+                                                        <td>
+                                                            <span class="soc-ioc-value" t-esc="ioc.value"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-attf-class="soc-ioc-score soc-ioc-score-#{ioc.score_class}"
+                                                                  t-esc="ioc.score"/>
+                                                        </td>
+                                                        <td t-esc="ioc.source"/>
+                                                        <td t-esc="ioc.last_seen"/>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="soc-empty-cell">
+                                            <i class="fa fa-info-circle"/> Aucun indicateur OpenCTI — Configurez la connexion dans Paramètres
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
                         </div>
 
-                        <!-- Flow Arrow -->
+                        <!-- Flow Arrow 2→3 -->
                         <div class="soc-layer-arrow">
                             <div class="soc-arrow-line"/>
                             <div class="soc-arrow-label">contexte CTI</div>
                             <i class="fa fa-chevron-down soc-arrow-icon"/>
                         </div>
 
-                        <!-- Layer 3: IA & Analyse -->
-                        <div class="soc-layer soc-layer-3">
+                        <!-- ══════════ Layer 3: IA &amp; Analyse ══════════ -->
+                        <div t-att-class="'soc-layer soc-layer-3 soc-layer-interactive' + (state.expandedLayer === 3 ? ' soc-layer-expanded' : '')"
+                             t-on-click="() => this.toggleLayer(3)">
                             <div class="soc-layer-header">
                                 <span class="soc-layer-number">LAYER 3</span>
                                 <span class="soc-layer-name">IA &amp; Analyse</span>
+                                <div class="soc-layer-stats">
+                                    <span class="soc-layer-stat-badge soc-layer-stat-ai">
+                                        <i class="fa fa-robot"/> <t t-esc="state.data.layer_stats.ai_analyzed || 0"/> analysées
+                                    </span>
+                                    <span class="soc-layer-stat-badge soc-layer-stat-fp">
+                                        <i class="fa fa-ban"/> <t t-esc="state.data.layer_stats.ai_fp || 0"/> faux positifs
+                                    </span>
+                                </div>
+                                <i t-att-class="'fa soc-layer-toggle-icon ' + (state.expandedLayer === 3 ? 'fa-chevron-up' : 'fa-chevron-down')"/>
                             </div>
                             <div class="soc-layer-cards">
-                                <div class="soc-layer-card">
+                                <div class="soc-layer-card soc-layer-card-interactive">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-microchip"/></div>
                                     <div class="soc-layer-card-title">Ollama</div>
                                     <div class="soc-layer-card-desc">LLM local</div>
+                                    <div class="soc-layer-card-count" t-esc="state.data.ai_stats.total_analyses || 0"/>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-brain"/></div>
                                     <div class="soc-layer-card-title">Llama 3.1</div>
                                     <div class="soc-layer-card-desc">8b / Mistral 7b</div>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-history"/></div>
                                     <div class="soc-layer-card-title">SOCMemory</div>
                                     <div class="soc-layer-card-desc">Campagnes</div>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-exclamation-circle"/></div>
                                     <div class="soc-layer-card-title">AbuseIPDB</div>
                                     <div class="soc-layer-card-desc">IOC scoring</div>
                                 </div>
                                 <div class="soc-layer-card">
+                                    <div class="soc-layer-card-icon"><i class="fa fa-code"/></div>
                                     <div class="soc-layer-card-title">pycti</div>
                                     <div class="soc-layer-card-desc">OpenCTI API</div>
                                 </div>
                             </div>
+
+                            <!-- Expanded Panel for Layer 3 — AI Analysis results -->
+                            <t t-if="state.expandedLayer === 3">
+                                <div class="soc-layer-alert-panel" t-on-click.stop="">
+                                    <div class="soc-layer-alert-header">
+                                        <i class="fa fa-robot"/> Résultats d'Analyse IA
+                                    </div>
+                                    <div class="soc-ai-analysis-grid">
+                                        <div class="soc-ai-stat-card">
+                                            <div class="soc-ai-stat-value" t-esc="state.data.ai_stats.total_analyses || 0"/>
+                                            <div class="soc-ai-stat-label">Analyses totales</div>
+                                        </div>
+                                        <div class="soc-ai-stat-card">
+                                            <div class="soc-ai-stat-value soc-ai-fp-val" t-esc="state.data.ai_stats.false_positives_detected || 0"/>
+                                            <div class="soc-ai-stat-label">Faux positifs détectés</div>
+                                        </div>
+                                        <div class="soc-ai-stat-card">
+                                            <div class="soc-ai-stat-value soc-ai-rate-val">
+                                                <t t-esc="state.data.fp_rate"/>%
+                                            </div>
+                                            <div class="soc-ai-stat-label">Taux de faux positifs</div>
+                                        </div>
+                                        <div class="soc-ai-stat-card">
+                                            <div class="soc-ai-stat-value soc-ai-analyzed-val" t-esc="state.data.layer_stats.ai_analyzed || 0"/>
+                                            <div class="soc-ai-stat-label">Alertes analysées</div>
+                                        </div>
+                                    </div>
+                                    <!-- Show recent AI analyzed alerts -->
+                                    <t t-if="state.layerAlerts.length">
+                                        <div class="soc-layer-alert-header" style="margin-top: 16px;">
+                                            <i class="fa fa-list"/> Dernières alertes analysées par IA
+                                        </div>
+                                        <table class="soc-table soc-layer-alert-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Titre</th>
+                                                    <th>Sévérité</th>
+                                                    <th>Faux Positif IA</th>
+                                                    <th>Heure</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.layerAlerts" t-as="alert" t-key="alert.id">
+                                                    <tr t-on-click.stop="() => this.openAlert(alert.id)"
+                                                        style="cursor: pointer;">
+                                                        <td t-esc="alert.name"/>
+                                                        <td>
+                                                            <span class="soc-alert-title-cell" t-esc="alert.title"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-attf-class="soc-severity-badge soc-severity-#{alert.severity}"
+                                                                  t-esc="alert.severity"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-if="alert.ai_fp" class="soc-fp-badge-yes">Oui</span>
+                                                            <span t-else="" class="soc-fp-badge-no">Non</span>
+                                                        </td>
+                                                        <td style="white-space: nowrap;" t-esc="alert.timestamp"/>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                </div>
+                            </t>
                         </div>
 
-                        <!-- Flow Arrow (split) -->
+                        <!-- Flow Arrow (split) 3→4/5 -->
                         <div class="soc-layer-arrow soc-arrow-split">
                             <div class="soc-arrow-branch">
                                 <div class="soc-arrow-label">via Shuffle</div>
@@ -189,45 +425,110 @@
                             </div>
                         </div>
 
-                        <!-- Layer 4 & 5 side by side -->
+                        <!-- Layer 4 &amp; 5 side by side -->
                         <div class="soc-layers-bottom">
 
-                            <!-- Layer 4: SOAR Automation -->
-                            <div class="soc-layer soc-layer-4">
+                            <!-- ══════════ Layer 4: SOAR Automation ══════════ -->
+                            <div t-att-class="'soc-layer soc-layer-4 soc-layer-interactive' + (state.expandedLayer === 4 ? ' soc-layer-expanded' : '')"
+                                 t-on-click="() => this.toggleLayer(4)">
                                 <div class="soc-layer-header">
                                     <span class="soc-layer-number">LAYER 4</span>
                                     <span class="soc-layer-name">SOAR Automation</span>
                                     <span class="soc-layer-badge-optional">OPTIONNEL</span>
+                                    <i t-att-class="'fa soc-layer-toggle-icon ' + (state.expandedLayer === 4 ? 'fa-chevron-up' : 'fa-chevron-down')"/>
                                 </div>
                                 <div class="soc-layer-cards">
                                     <div class="soc-layer-card">
+                                        <div class="soc-layer-card-icon"><i class="fa fa-random"/></div>
                                         <div class="soc-layer-card-title">Shuffle</div>
                                         <div class="soc-layer-card-desc">Orchestrateur</div>
                                     </div>
                                     <div class="soc-layer-card">
+                                        <div class="soc-layer-card-icon"><i class="fa fa-ban"/></div>
                                         <div class="soc-layer-card-title">Auto-block</div>
                                         <div class="soc-layer-card-desc">Firewall / IP</div>
                                     </div>
                                     <div class="soc-layer-card">
+                                        <div class="soc-layer-card-icon"><i class="fa fa-lock"/></div>
                                         <div class="soc-layer-card-title">Isolate</div>
                                         <div class="soc-layer-card-desc">Agent Wazuh</div>
                                     </div>
                                     <div class="soc-layer-card">
+                                        <div class="soc-layer-card-icon"><i class="fa fa-envelope"/></div>
                                         <div class="soc-layer-card-title">Notify</div>
                                         <div class="soc-layer-card-desc">Email / SMS</div>
                                     </div>
                                 </div>
+
+                                <!-- Expanded Panel for Layer 4 -->
+                                <t t-if="state.expandedLayer === 4">
+                                    <div class="soc-layer-alert-panel" t-on-click.stop="">
+                                        <div class="soc-layer-alert-header">
+                                            <i class="fa fa-cog"/> Automatisations SOAR
+                                        </div>
+                                        <div class="soc-soar-info">
+                                            <div class="soc-soar-card">
+                                                <i class="fa fa-random"/>
+                                                <span>Shuffle orchestre les workflows de réponse automatique</span>
+                                            </div>
+                                            <div class="soc-soar-card">
+                                                <i class="fa fa-ban"/>
+                                                <span>Blocage automatique des IPs malveillantes via Firewall</span>
+                                            </div>
+                                            <div class="soc-soar-card">
+                                                <i class="fa fa-lock"/>
+                                                <span>Isolation d'agents Wazuh compromis</span>
+                                            </div>
+                                            <div class="soc-soar-card">
+                                                <i class="fa fa-envelope"/>
+                                                <span>Notifications par Email/SMS pour les incidents critiques</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
                             </div>
 
-                            <!-- Layer 5 pointer -->
-                            <div class="soc-layer soc-layer-5">
+                            <!-- ══════════ Layer 5: SOC Odoo Dashboard ══════════ -->
+                            <div t-att-class="'soc-layer soc-layer-5 soc-layer-interactive' + (state.expandedLayer === 5 ? ' soc-layer-expanded' : '')"
+                                 t-on-click="() => this.toggleLayer(5)">
                                 <div class="soc-layer-header">
                                     <span class="soc-layer-number">LAYER 5</span>
                                     <span class="soc-layer-name">SOC Odoo Dashboard</span>
+                                    <i t-att-class="'fa soc-layer-toggle-icon ' + (state.expandedLayer === 5 ? 'fa-chevron-up' : 'fa-chevron-down')"/>
                                 </div>
                                 <div class="soc-layer-5-desc">
                                     <i class="fa fa-arrow-down"/> Les données ci-dessous constituent la couche 5 — le tableau de bord opérationnel SOC.
                                 </div>
+
+                                <!-- Expanded Panel for Layer 5 — Escalated alerts -->
+                                <t t-if="state.expandedLayer === 5">
+                                    <div class="soc-layer-alert-panel" t-on-click.stop="">
+                                        <div class="soc-layer-alert-header">
+                                            <i class="fa fa-level-up"/> Alertes Escaladées vers le Dashboard
+                                            <button class="soc-layer-alert-viewall" t-on-click.stop="() => this.scrollToSection('operational')">
+                                                Aller au Dashboard <i class="fa fa-arrow-down"/>
+                                            </button>
+                                        </div>
+                                        <div class="soc-escalation-summary">
+                                            <div class="soc-escalation-stat">
+                                                <div class="soc-escalation-val" t-esc="state.data.escalated_alerts"/>
+                                                <div class="soc-escalation-label">Escaladées</div>
+                                            </div>
+                                            <div class="soc-escalation-stat">
+                                                <div class="soc-escalation-val" t-esc="state.data.total_incidents"/>
+                                                <div class="soc-escalation-label">Incidents</div>
+                                            </div>
+                                            <div class="soc-escalation-stat">
+                                                <div class="soc-escalation-val" t-esc="state.data.open_incidents"/>
+                                                <div class="soc-escalation-label">Ouverts</div>
+                                            </div>
+                                            <div class="soc-escalation-stat">
+                                                <div class="soc-escalation-val soc-escalation-crit" t-esc="state.data.critical_incidents"/>
+                                                <div class="soc-escalation-label">Critiques</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
                             </div>
                         </div>
 
@@ -238,7 +539,7 @@
                 <!--  OPENCTI RESULTS SECTION                                -->
                 <!-- ═══════════════════════════════════════════════════════ -->
 
-                <div class="soc-opencti-section">
+                <div class="soc-opencti-section" id="section-opencti" t-ref="section-opencti">
                     <div class="soc-section-title">
                         <i class="fa fa-database"/> OpenCTI — Threat Intelligence Results
                     </div>
@@ -324,7 +625,7 @@
                 <!--  LAYER 5 — SOC OPERATIONAL DASHBOARD                    -->
                 <!-- ═══════════════════════════════════════════════════════ -->
 
-                <div class="soc-layer5-section">
+                <div class="soc-layer5-section" id="section-operational" t-ref="section-operational">
                     <div class="soc-section-title">
                         <i class="fa fa-tachometer"/> Layer 5 — Tableau de Bord Opérationnel
                     </div>
@@ -411,7 +712,7 @@
                     </div>
 
                     <!-- ─── Charts Row ────────────────────────────────── -->
-                    <div class="soc-charts-row">
+                    <div class="soc-charts-row" id="section-charts" t-ref="section-charts">
 
                         <!-- Daily Alerts Bar Chart -->
                         <div class="soc-chart-card">
@@ -474,7 +775,7 @@
                     </div>
 
                     <!-- ─── Tables Row ────────────────────────────────── -->
-                    <div class="soc-tables-row">
+                    <div class="soc-tables-row" id="section-tables" t-ref="section-tables">
 
                         <!-- Recent Critical Alerts -->
                         <div class="soc-chart-card">
@@ -498,7 +799,7 @@
                                             style="cursor: pointer;">
                                             <td t-esc="alert.name"/>
                                             <td>
-                                                <span style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                                <span class="soc-alert-title-cell"
                                                       t-esc="alert.title"/>
                                             </td>
                                             <td>

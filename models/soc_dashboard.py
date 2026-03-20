@@ -200,6 +200,20 @@ class SocDashboard(models.Model):
         except Exception as e:
             _logger.warning("OpenCTI config check failed: %s", e)
 
+        # ── Layer Stats ───────────────────────────────────────────────
+        wazuh_alerts_count = alert_model.search_count([('source', '=', 'wazuh')])
+        other_alerts_count = alert_model.search_count([('source', '!=', 'wazuh')])
+        ai_analyzed_count = alert_model.search_count([('ai_analysis', '!=', False)])
+        ai_fp_count = alert_model.search_count([('ai_is_false_positive', '=', True)])
+
+        layer_stats = {
+            'wazuh_alerts': wazuh_alerts_count,
+            'other_alerts': other_alerts_count,
+            'ai_analyzed': ai_analyzed_count,
+            'ai_fp': ai_fp_count,
+            'escalated': escalated_alerts,
+        }
+
         return {
             # Alert KPIs
             'total_alerts': total_alerts,
@@ -228,4 +242,74 @@ class SocDashboard(models.Model):
             'mttr': mttr,
             # OpenCTI
             'opencti_data': opencti_data,
+            # Layer Stats
+            'layer_stats': layer_stats,
         }
+
+    @api.model
+    def get_layer_alerts(self, layer):
+        """
+        Return alerts relevant to a specific architecture layer.
+        Called when a user expands a layer in the interactive architecture.
+        
+        Layer 1 (Detection): Recent alerts from Wazuh/detection sources
+        Layer 2 (Threat Intel): Handled client-side (OpenCTI data)
+        Layer 3 (IA & Analysis): AI-analyzed alerts
+        Layer 4 (SOAR): Handled client-side (info cards)
+        Layer 5 (Dashboard): Escalated alerts
+        """
+        alert_model = self.env['soc.alert']
+        alerts = []
+
+        try:
+            layer = int(layer) if layer else 0
+        except (ValueError, TypeError):
+            layer = 0
+
+        if layer == 1:
+            # Layer 1: Detection — recent Wazuh alerts
+            records = alert_model.search([
+                ('source', '=', 'wazuh'),
+                ('state', 'not in', ['false_positive', 'closed']),
+            ], limit=10, order='timestamp desc')
+            alerts = [{
+                'id': a.id,
+                'name': a.name,
+                'title': a.title,
+                'severity': a.severity,
+                'source_ip': a.source_ip or 'N/A',
+                'timestamp': a.timestamp.strftime('%Y-%m-%d %H:%M') if a.timestamp else '',
+            } for a in records]
+
+        elif layer == 3:
+            # Layer 3: IA & Analyse — AI-analyzed alerts
+            records = alert_model.search([
+                ('ai_analysis', '!=', False),
+            ], limit=10, order='timestamp desc')
+            alerts = [{
+                'id': a.id,
+                'name': a.name,
+                'title': a.title,
+                'severity': a.severity,
+                'ai_fp': a.ai_is_false_positive if hasattr(a, 'ai_is_false_positive') else False,
+                'source_ip': a.source_ip or 'N/A',
+                'timestamp': a.timestamp.strftime('%Y-%m-%d %H:%M') if a.timestamp else '',
+            } for a in records]
+
+        elif layer == 5:
+            # Layer 5: Dashboard — escalated alerts
+            records = alert_model.search([
+                ('state', '=', 'escalated'),
+            ], limit=10, order='timestamp desc')
+            alerts = [{
+                'id': a.id,
+                'name': a.name,
+                'title': a.title,
+                'severity': a.severity,
+                'source_ip': a.source_ip or 'N/A',
+                'timestamp': a.timestamp.strftime('%Y-%m-%d %H:%M') if a.timestamp else '',
+            } for a in records]
+
+        # Layers 2 and 4 are handled client-side
+        return {'alerts': alerts}
+
