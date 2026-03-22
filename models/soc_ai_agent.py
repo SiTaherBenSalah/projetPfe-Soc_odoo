@@ -12,6 +12,7 @@ import logging
 import re
 
 import requests
+from OTXv2 import OTXv2, IndicatorTypes
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
@@ -48,6 +49,7 @@ class SocAiAgent(models.Model):
     # ── API Keys for Open-Source Threat Intel ──────────────────────────
     abuseipdb_api_key = fields.Char(
         string='AbuseIPDB API Key',
+        default='998e25bbefb8a0ec63ca1e982e44778b36625b707cd37724cdbd4b967c2718c28f5d7b0fc02733ce',
         help='Free API key from abuseipdb.com',
     )
     otx_api_key = fields.Char(
@@ -141,68 +143,94 @@ class SocAiAgent(models.Model):
             _logger.warning("AbuseIPDB check failed for %s: %s", ip_address, str(e))
             return None
 
-    def _check_otx(self, indicator, indicator_type='IPv4'):
+    def _check_otx(self, indicator, indicator_type=IndicatorTypes.IPv4):
         """
-        Check indicator using OTX AlienVault (open-source threat intel).
-        indicator_type: IPv4, domain, hostname, url, FileHash-MD5, etc.
+        Check indicator using OTXv2 Python SDK.
+        indicator_type: IndicatorTypes.IPv4, IndicatorTypes.DOMAIN, etc.
         """
         config = self.search([], limit=1)
         if not config or not config.otx_api_key:
             return None
 
-        url = f'https://otx.alienvault.com/api/v1/indicators/{indicator_type}/{indicator}/general'
-        headers = {'X-OTX-API-KEY': config.otx_api_key}
-
         try:
-            response = requests.get(url, headers=headers, timeout=30)
-            response.raise_for_status()
-            data = response.json()
+            otx = OTXv2(config.otx_api_key)
+            result = otx.get_indicator_details_full(indicator_type, indicator)
+            
+            general = result.get('general', {})
             return {
-                'pulse_count': data.get('pulse_info', {}).get('count', 0),
-                'reputation': data.get('reputation', 0),
-                'country': data.get('country_code', ''),
-                'validation': data.get('validation', []),
+                'pulse_count': general.get('pulse_info', {}).get('count', 0),
+                'reputation': general.get('reputation', 0),
+                'country': general.get('country_code', ''),
+                'validation': general.get('validation', []),
                 'pulses': [
                     {
                         'name': p.get('name', ''),
                         'description': p.get('description', ''),
                         'tags': p.get('tags', []),
                     }
-                    for p in data.get('pulse_info', {}).get('pulses', [])[:5]
+                    for p in general.get('pulse_info', {}).get('pulses', [])[:5]
                 ],
             }
         except Exception as e:
-            _logger.warning("OTX check failed for %s: %s", indicator, str(e))
+            _logger.warning("OTX SDK check failed for %s: %s", indicator, str(e))
             return None
 
     def _check_virustotal(self, indicator, indicator_type='ip-address'):
         """
-        Check indicator using VirusTotal API (free tier: 4 requests/min).
-        indicator_type: ip-address, domain, url, file
+        Check indicator using VirusTotal API (vt-py) (free tier: 4 requests/min).
+        indicator_type: ip_addresses, domains, urls, files
         """
         config = self.search([], limit=1)
         if not config or not config.virustotal_api_key:
             return None
 
-        url = f'https://www.virustotal.com/api/v3/{indicator_type}s/{indicator}'
-        headers = {'x-apikey': config.virustotal_api_key}
+        # Map generic indicators to vt-py specific paths
+        path_map = {
+            'ip-address': 'ip_addresses',
+            'ip_address': 'ip_addresses',
+            'ip_addresses': 'ip_addresses',
+            'ip': 'ip_addresses',
+            'domain': 'domains',
+            'domains': 'domains',
+            'url': 'urls',
+            'urls': 'urls',
+            'file': 'files',
+            'files': 'files',
+            'hash': 'files',
+        }
+        api_path = path_map.get(indicator_type, indicator_type)
 
         try:
-            response = requests.get(url, headers=headers, timeout=30)
-            response.raise_for_status()
-            data = response.json().get('data', {}).get('attributes', {})
-            stats = data.get('last_analysis_stats', {})
-            return {
-                'malicious': stats.get('malicious', 0),
-                'suspicious': stats.get('suspicious', 0),
-                'harmless': stats.get('harmless', 0),
-                'undetected': stats.get('undetected', 0),
-                'reputation': data.get('reputation', 0),
-                'country': data.get('country', ''),
-                'as_owner': data.get('as_owner', ''),
-            }
+            import vt
+        except ImportError:
+            _logger.warning("vt-py library not installed. Please run: pip install vt-py")
+            return None
+
+        try:
+            client = vt.Client(config.virustotal_api_key)
+            try:
+                # url_id needs to be generated for urls
+                if api_path == 'urls':
+                    indicator = vt.url_id(indicator)
+                
+                # Fetch the object using vt-py
+                obj = client.get_object(f"/{api_path}/{indicator}")
+                
+                stats = obj.last_analysis_stats
+                
+                return {
+                    'malicious': stats.get('malicious', 0),
+                    'suspicious': stats.get('suspicious', 0),
+                    'harmless': stats.get('harmless', 0),
+                    'undetected': stats.get('undetected', 0),
+                    'reputation': getattr(obj, 'reputation', 0),
+                    'country': getattr(obj, 'country', ''),
+                    'as_owner': getattr(obj, 'as_owner', ''),
+                }
+            finally:
+                client.close()
         except Exception as e:
-            _logger.warning("VirusTotal check failed for %s: %s", indicator, str(e))
+            _logger.warning("VirusTotal (vt-py) check failed for %s: %s", indicator, str(e))
             return None
 
     # ╔═══════════════════════════════════════════════════════════════╗
