@@ -12,7 +12,12 @@ import logging
 import re
 
 import requests
-from OTXv2 import OTXv2, IndicatorTypes
+try:
+    from OTXv2 import OTXv2, IndicatorTypes
+except ImportError:
+    OTXv2 = None
+    IndicatorTypes = None
+
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
@@ -143,13 +148,17 @@ class SocAiAgent(models.Model):
             _logger.warning("AbuseIPDB check failed for %s: %s", ip_address, str(e))
             return None
 
-    def _check_otx(self, indicator, indicator_type=IndicatorTypes.IPv4):
+    def _check_otx(self, indicator, indicator_type='IPv4'):
         """
         Check indicator using OTXv2 Python SDK.
-        indicator_type: IndicatorTypes.IPv4, IndicatorTypes.DOMAIN, etc.
+        indicator_type: 'IPv4', 'domain', etc.
         """
         config = self.search([], limit=1)
         if not config or not config.otx_api_key:
+            return None
+
+        if OTXv2 is None:
+            _logger.warning("OTXv2 library not installed. Please run: pip install OTXv2")
             return None
 
         try:
