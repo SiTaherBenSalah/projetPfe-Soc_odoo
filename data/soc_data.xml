@@ -43,7 +43,7 @@
         <!-- ══════════════════════════════════════════════════════════ -->
         <record id="default_wazuh_connector" model="soc.wazuh.connector">
             <field name="name">Wazuh Manager (Default)</field>
-            <field name="wazuh_host">https://localhost</field>
+            <field name="wazuh_host">https://192.168.102.146</field>
             <field name="wazuh_port">55000</field>
             <field name="wazuh_user">wazuh-wui</field>
             <field name="wazuh_password">changeme</field>

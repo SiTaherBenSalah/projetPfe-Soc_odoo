@@ -91,8 +91,8 @@ class SocWazuhConnector(models.Model):
     wazuh_host = fields.Char(
         string='Wazuh API Host',
         required=True,
-        default='https://localhost',
-        help='Wazuh Manager API host URL (e.g., https://192.168.1.100)',
+        default='https://192.168.102.146',
+        help='Wazuh Manager API host URL (e.g., https://192.168.102.146)',
     )
     wazuh_port = fields.Integer(
         string='Wazuh API Port',
