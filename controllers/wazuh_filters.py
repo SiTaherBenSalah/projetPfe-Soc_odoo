@@ -11,13 +11,13 @@ def apply_filters(alert_data):
     rule_id = str(rule.get('id', ''))
     rule_level = rule.get('level', 0)
     
-    # Example Criterion 1: Drop useless rules below level 3
-    if rule_level < 3:
+    # Example Criterion 1: Drop useless rules below level 1 (allow most alerts for testing)
+    if rule_level < 1:
         return False
         
-    # Example Criterion 2: Ignore specific noisy rules 
-    # (e.g., rule 1002 - Unknown problem somewhere in the system)
-    if rule_id in ['1002', '5716', '5501', '5502']:
-        return False
+    # Example Criterion 2: Ignore specific extremely noisy structural rules if needed
+    # (Commented out to allow most alerts during testing)
+    # if rule_id in ['1002']:
+    #     return False
         
     return True

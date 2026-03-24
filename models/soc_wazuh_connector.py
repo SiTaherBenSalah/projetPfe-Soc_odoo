@@ -127,12 +127,12 @@ class SocWazuhConnector(models.Model):
     )
     filter_tunisia_only = fields.Boolean(
         string='Filter Tunisia IPs Only',
-        default=True,
+        default=False,
         help='Only import alerts related to Tunisia IP ranges',
     )
     filter_major_attacks = fields.Boolean(
         string='Filter Major Attacks Only',
-        default=True,
+        default=False,
         help='Only import alerts matching major attack patterns in Tunisia',
     )
     fetch_interval_minutes = fields.Integer(
